@@ -1,0 +1,34 @@
+{
+  "character": "zutomayo_female_singer",
+  "show": "smoking_behind_the_supermarket_with_you",
+  "chroma_id": "smoking_behind_the_supermarket_with_you::zutomayo_female_singer",
+  "seeds": [
+    {
+      "file": "seed_00.wav",
+      "mos": 3.133,
+      "duration": 3.92,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_019.wav"
+    },
+    {
+      "file": "seed_01.wav",
+      "mos": 3.105,
+      "duration": 6.2,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_017.wav"
+    },
+    {
+      "file": "seed_02.wav",
+      "mos": 3.073,
+      "duration": 4.42,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_018.wav"
+    },
+    {
+      "file": "seed_03.wav",
+      "mos": 3.054,
+      "duration": 2.96,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_016.wav"
+    }
+  ],
+  "scorer": "heuristic",
+  "harvested_at": "2026-06-13T20:14:19",
+  "bank_complete": false
+}

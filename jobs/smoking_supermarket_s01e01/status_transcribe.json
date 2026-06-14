@@ -1,0 +1,16 @@
+{
+  "stage": "transcribe",
+  "status": "done",
+  "progress": 100,
+  "error": null,
+  "logs": [
+    "[10:54:29] Loading faster-whisper medium (int8) …",
+    "[10:54:37] Transcribing vocals.wav (lang=ja)",
+    "[10:56:14] Transcription complete — 422 segments, lang=ja",
+    "[10:56:14] Done"
+  ],
+  "owner": "n8n",
+  "updated_at": "2026-06-13T15:57:20.096Z",
+  "segment_count": 422,
+  "detected_language": "ja"
+}

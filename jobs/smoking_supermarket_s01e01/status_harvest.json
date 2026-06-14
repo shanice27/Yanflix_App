@@ -1,0 +1,109 @@
+{
+  "stage": "harvest",
+  "status": "done",
+  "progress": 100,
+  "error": null,
+  "logs": [
+    "[20:14:12] Quality scorer: SNR/flatness heuristic (NISQA not importable)",
+    "[20:14:12] WARNING: chromadb not installed \u2014 skipping registry upsert",
+    "[20:14:12] \u2500\u2500 chief_male_supporting: scoring 11 clips",
+    "[20:14:16]    seed_00.wav  MOS=5.00  3.1s",
+    "[20:14:16]    seed_01.wav  MOS=5.00  3.2s",
+    "[20:14:16]    seed_02.wav  MOS=4.56  2.9s",
+    "[20:14:16]    seed_03.wav  MOS=3.84  3.2s",
+    "[20:14:16]    seed_04.wav  MOS=3.70  2.5s",
+    "[20:14:16] \u2500\u2500 imase_male_singer: scoring 34 clips",
+    "[20:14:16]    seed_00.wav  MOS=4.88  2.4s",
+    "[20:14:16]    seed_01.wav  MOS=4.08  2.0s",
+    "[20:14:16]    seed_02.wav  MOS=4.01  2.2s",
+    "[20:14:16]    seed_03.wav  MOS=3.85  2.1s",
+    "[20:14:16]    seed_04.wav  MOS=3.85  2.1s",
+    "[20:14:16] \u2500\u2500 office_worker_male_background: scoring 6 clips",
+    "[20:14:16]    seed_00.wav  MOS=5.00  3.7s",
+    "[20:14:16]    seed_01.wav  MOS=4.40  2.5s",
+    "[20:14:16] \u2500\u2500 older_lady_clerk_female_supporting: scoring 12 clips",
+    "[20:14:17]    seed_00.wav  MOS=4.81  3.4s",
+    "[20:14:17]    seed_01.wav  MOS=4.81  3.5s",
+    "[20:14:17]    seed_02.wav  MOS=4.57  2.3s",
+    "[20:14:17]    seed_03.wav  MOS=4.57  2.6s",
+    "[20:14:17]    seed_04.wav  MOS=4.55  2.9s",
+    "[20:14:17] \u2500\u2500 sasaki_male_lead: scoring 121 clips",
+    "[20:14:17]    seed_00.wav  MOS=5.00  3.1s",
+    "[20:14:17]    seed_01.wav  MOS=5.00  2.5s",
+    "[20:14:17]    seed_02.wav  MOS=5.00  3.8s",
+    "[20:14:17]    seed_03.wav  MOS=5.00  2.5s",
+    "[20:14:17]    seed_04.wav  MOS=5.00  3.2s",
+    "[20:14:17] \u2500\u2500 suzuki_male_supporting: scoring 54 clips",
+    "[20:14:18]    seed_00.wav  MOS=5.00  2.5s",
+    "[20:14:18]    seed_01.wav  MOS=5.00  2.2s",
+    "[20:14:18]    seed_02.wav  MOS=5.00  2.7s",
+    "[20:14:18]    seed_03.wav  MOS=5.00  2.6s",
+    "[20:14:18]    seed_04.wav  MOS=5.00  2.7s",
+    "[20:14:18] \u2500\u2500 tayama: scoring 110 clips",
+    "[20:14:18]    seed_00.wav  MOS=5.00  2.3s",
+    "[20:14:18]    seed_01.wav  MOS=5.00  2.4s",
+    "[20:14:18]    seed_02.wav  MOS=5.00  2.3s",
+    "[20:14:18]    seed_03.wav  MOS=5.00  2.9s",
+    "[20:14:18]    seed_04.wav  MOS=5.00  2.9s",
+    "[20:14:18] \u2500\u2500 yamada: scoring 56 clips",
+    "[20:14:19]    seed_00.wav  MOS=5.00  3.2s",
+    "[20:14:19]    seed_01.wav  MOS=5.00  2.1s",
+    "[20:14:19]    seed_02.wav  MOS=5.00  2.0s",
+    "[20:14:19]    seed_03.wav  MOS=5.00  3.3s",
+    "[20:14:19]    seed_04.wav  MOS=5.00  2.8s",
+    "[20:14:19] \u2500\u2500 zutomayo_female_singer: scoring 6 clips",
+    "[20:14:19]    seed_00.wav  MOS=3.13  3.9s",
+    "[20:14:19]    seed_01.wav  MOS=3.11  6.2s",
+    "[20:14:19]    seed_02.wav  MOS=3.07  4.4s",
+    "[20:14:19]    seed_03.wav  MOS=3.05  3.0s",
+    "[20:14:19] Harvest complete: 9 characters"
+  ],
+  "updated_at": "2026-06-13T20:14:19",
+  "result": {
+    "chief_male_supporting": {
+      "seeds": 5,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::chief_male_supporting"
+    },
+    "imase_male_singer": {
+      "seeds": 5,
+      "best_mos": 4.88,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::imase_male_singer"
+    },
+    "office_worker_male_background": {
+      "seeds": 2,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::office_worker_male_background"
+    },
+    "older_lady_clerk_female_supporting": {
+      "seeds": 5,
+      "best_mos": 4.81,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::older_lady_clerk_female_supporting"
+    },
+    "sasaki_male_lead": {
+      "seeds": 5,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::sasaki_male_lead"
+    },
+    "suzuki_male_supporting": {
+      "seeds": 5,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::suzuki_male_supporting"
+    },
+    "tayama": {
+      "seeds": 5,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::tayama"
+    },
+    "yamada": {
+      "seeds": 5,
+      "best_mos": 5.0,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::yamada"
+    },
+    "zutomayo_female_singer": {
+      "seeds": 4,
+      "best_mos": 3.13,
+      "chroma_id": "smoking_behind_the_supermarket_with_you::zutomayo_female_singer"
+    }
+  }
+}

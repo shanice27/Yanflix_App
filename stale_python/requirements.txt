@@ -1,0 +1,23 @@
+# Yanflix Requirements
+# Install with: pip install -r requirements.txt --break-system-packages
+# (or inside your conda env: pip install -r requirements.txt)
+
+# UI
+streamlit>=1.35.0
+
+# Gemini / Google AI
+google-generativeai>=0.7.0
+
+# Hugging Face / Fish Speech
+gradio_client>=0.16.0
+huggingface_hub>=0.23.0
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.1
+
+# Already installed via SoniTranslate (listed for completeness):
+# faster-whisper
+# demucs
+# pyannote.audio
+# torch (CUDA)

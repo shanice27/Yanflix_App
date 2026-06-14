@@ -1,0 +1,3521 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yanflix ” Private AI Dubbing Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --bg-1: #0d0d18;
+    --bg-2: #131322;
+    --bg-3: #1b1b2c;
+    --line: #232336;
+    --line-2: #2e2e44;
+    --ink: #ece9e0;
+    --ink-2: #b8b3a4;
+    --ink-3: #6f6a5c;
+    --crimson: #c8102e;
+    --crimson-dim: #8a0a1f;
+    --crimson-glow: rgba(200, 16, 46, 0.55);
+    --red: #c8102e;
+    --gold: #d4af37;
+    --gold-dim: #8b7224;
+    --good: #4ade80;
+    --warn: #f59e0b;
+    --info: #6aa9ff;
+    --bad: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased; }
+  body {
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(200,16,46,0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(212,175,55,0.05), transparent 60%),
+      var(--bg);
+    overflow: hidden;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1f1f30; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2a40; }
+  button { font-family: inherit; cursor: pointer; }
+  input, select, textarea { font-family: inherit; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .sidebar {
+    background: linear-gradient(180deg, #0a0a14 0%, #07070e 100%);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .sidebar::after {
+    content: ""; position: absolute; right: -1px; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(200,16,46,0.35) 30%, rgba(212,175,55,0.2) 70%, transparent);
+    pointer-events: none;
+  }
+  .logo {
+    padding: 32px 22px 26px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    background:
+      radial-gradient(160% 80% at 50% 120%, rgba(200,16,46,0.18), transparent 60%),
+      linear-gradient(180deg, #050509, #0a0a14);
+  }
+  .logo h1 {
+    font-family: 'Bebas Neue', serif;
+    font-weight: 400;
+    font-size: 44px;
+    letter-spacing: 0.04em;
+    margin: 0;
+    line-height: 0.9;
+    background: linear-gradient(180deg, #a00d22 0%, #6f0816 55%, #3d040c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+      0 1px 0 rgba(0,0,0,0.6),
+      0 2px 0 rgba(0,0,0,0.5),
+      0 3px 6px rgba(200,16,46,0.4),
+      0 0 24px rgba(200,16,46,0.25);
+    filter: drop-shadow(0 4px 8px rgba(200,16,46,0.18));
+  }
+  .logo .tag {
+    margin-top: 8px;
+    font-size: 9.5px;
+    letter-spacing: 0.34em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .logo .bar {
+    position: absolute; left: 22px; right: 22px; bottom: -1px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--crimson), transparent);
+    opacity: 0.7;
+  }
+  .nav {
+    padding: 16px 12px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 12px; margin-bottom: 4px;
+    border-radius: 6px; cursor: pointer; color: var(--ink-2);
+    font-size: 13.5px; letter-spacing: 0.04em; font-weight: 400;
+    border: 1px solid transparent;
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.025); color: var(--ink); }
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(200,16,46,0.18), rgba(200,16,46,0.04) 80%);
+    color: #fff;
+    border-color: rgba(200,16,46,0.35);
+  }
+  .nav-item.active::before {
+    content: ""; position: absolute; left: -12px; top: 8px; bottom: 8px; width: 2px;
+    background: var(--crimson); box-shadow: 0 0 10px var(--crimson-glow);
+  }
+  .nav-item .ico { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.85; }
+  .nav-item.active .ico { color: var(--gold); opacity: 1; }
+  .sys {
+    margin-top: auto;
+    padding: 14px 18px;
+    border-top: 1px solid var(--line);
+    font-size: 10.5px; letter-spacing: 0.1em;
+  }
+  .sys-row { display: flex; justify-content: space-between; padding: 4px 0; color: var(--ink-3); text-transform: uppercase; }
+  .sys-ok { color: var(--good); }
+  .sys-bad { color: var(--bad); }
+  .sys-warn { color: var(--warn); }
+  .ws-row {
+    margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px; font-size: 10.5px;
+    letter-spacing: 0.12em; color: var(--ink-3); text-transform: uppercase;
+  }
+  .ws-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 8px var(--good), 0 0 0 3px rgba(74, 222, 128, 0.12);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .ws-dot.bad { background: var(--bad); box-shadow: 0 0 8px var(--bad); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+  .main { overflow-y: auto; padding: 32px 44px 60px; position: relative; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; gap: 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.34em; color: var(--gold); text-transform: uppercase; font-weight: 500; margin-bottom: 8px; }
+  .page-title { font-family: 'Bebas Neue', serif; font-size: 42px; font-weight: 400; letter-spacing: 0.04em; margin: 0; color: #fff; line-height: 1; }
+  .page-sub { color: var(--ink-3); font-size: 13.5px; margin-top: 8px; max-width: 620px; line-height: 1.6; }
+  .head-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .pill {
+    padding: 6px 12px; border-radius: 999px; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; border: 1px solid var(--line-2);
+    color: var(--ink-2); background: rgba(255,255,255,0.02);
+  }
+  .pill.crimson { color: var(--crimson); border-color: rgba(200,16,46,0.4); background: rgba(200,16,46,0.08); }
+  .pill.gold { color: var(--gold); border-color: rgba(212,175,55,0.4); background: rgba(212,175,55,0.08); }
+  .pill.good { color: var(--good); border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.08); }
+
+  .btn {
+    border: 1px solid var(--line-2); background: var(--bg-2); color: var(--ink);
+    padding: 9px 16px; border-radius: 4px; font-size: 13px; letter-spacing: 0.06em;
+    transition: all 160ms ease;
+  }
+  .btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn:disabled:hover { border-color: var(--line-2); color: var(--ink); }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--crimson) 0%, var(--crimson-dim) 100%);
+    border-color: var(--crimson);
+    color: #fff;
+    box-shadow: 0 6px 18px -8px var(--crimson-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500;
+  }
+  .btn-primary:hover { box-shadow: 0 8px 22px -6px var(--crimson-glow), inset 0 1px 0 rgba(255,255,255,0.18); filter: brightness(1.08); color: #fff; border-color: var(--crimson); }
+  .btn-primary:disabled { opacity: 0.4; filter: grayscale(0.6); cursor: not-allowed; }
+  .btn-gold {
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dim) 100%);
+    border-color: var(--gold); color: #1a1405;
+    text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600;
+  }
+  .btn-gold:hover { filter: brightness(1.08); color: #1a1405; border-color: var(--gold); }
+  .btn-ghost { background: transparent; border-color: var(--line-2); }
+  .btn-danger { color: var(--crimson); border-color: rgba(200,16,46,0.4); }
+  .btn-danger:hover { background: rgba(200,16,46,0.1); color: #fff; border-color: var(--crimson); }
+  .btn-small { padding: 6px 12px; font-size: 11.5px; }
+
+  .input, .select, .textarea {
+    width: 100%; padding: 10px 12px; background: var(--bg-1);
+    border: 1px solid var(--line); border-radius: 4px;
+    color: var(--ink); font-size: 13px;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+  .textarea { font-family: inherit; resize: vertical; min-height: 90px; line-height: 1.5; }
+  .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--crimson); box-shadow: 0 0 0 3px rgba(200,16,46,0.12); }
+  .label { display: block; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; font-weight: 500; }
+  .help { font-size: 11px; color: var(--ink-3); margin-top: 6px; line-height: 1.5; }
+  .field { margin-bottom: 18px; }
+
+  .panel {
+    background: linear-gradient(180deg, var(--bg-1), var(--bg));
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 24px;
+    position: relative;
+  }
+  .panel-title { font-family: 'Bebas Neue', serif; font-size: 18px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin: 0 0 16px; font-weight: 400; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+
+  /* Sub-tabs (studio) */
+  .subtabs {
+    display: flex; gap: 2px; border-bottom: 1px solid var(--line);
+    margin-bottom: 24px; overflow-x: auto;
+  }
+  .subtab {
+    background: transparent; border: 0; color: var(--ink-3);
+    padding: 12px 16px; font-size: 12.5px; letter-spacing: 0.06em;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    white-space: nowrap; transition: all 160ms ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .subtab:hover { color: var(--ink); }
+  .subtab.on { color: #fff; border-bottom-color: var(--crimson); }
+  .subtab .step {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1px solid currentColor; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 10px; font-weight: 600;
+    transition: all 160ms ease;
+  }
+  .subtab.done .step { background: var(--good); border-color: var(--good); color: #06120a; }
+  .subtab.on.done .step { background: var(--good); border-color: var(--good); }
+
+  /* Drop zone */
+  .dropzone {
+    position: relative;
+    border: 1.5px dashed var(--line-2);
+    border-radius: 6px;
+    padding: 56px 28px;
+    text-align: center;
+    transition: border-color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+    background:
+      radial-gradient(400px 200px at 50% 50%, rgba(200,16,46,0.04), transparent 70%),
+      var(--bg-1);
+    cursor: pointer;
+  }
+  .dropzone:hover, .dropzone.over {
+    border-color: var(--crimson);
+    box-shadow: inset 0 0 60px rgba(200,16,46,0.12), 0 0 0 1px rgba(200,16,46,0.4);
+  }
+  .dropzone .glyph {
+    width: 56px; height: 56px; margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line-2);
+    border-radius: 50%; color: var(--gold);
+    background: var(--bg-2);
+  }
+  .dropzone:hover .glyph { border-color: var(--crimson); color: var(--crimson); }
+  .dropzone .heading { font-family: 'Bebas Neue', serif; font-size: 22px; letter-spacing: 0.1em; color: #fff; margin-bottom: 4px; }
+  .dropzone .sub { color: var(--ink-3); font-size: 12px; letter-spacing: 0.04em; }
+
+  /* Stat */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: 4px; padding: 14px 16px;
+  }
+  .stat-label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+  .stat-value { font-family: 'Bebas Neue', serif; font-size: 28px; color: #fff; line-height: 1; letter-spacing: 0.02em; }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.crimson { color: var(--crimson); }
+  .stat-value.good { color: var(--good); }
+
+  /* Pipeline stages */
+  .stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+  .stage-card {
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 4px;
+    padding: 14px 16px; position: relative; overflow: hidden;
+  }
+  .stage-card.run { border-color: var(--crimson); box-shadow: 0 0 0 1px rgba(200,16,46,0.4), inset 0 0 30px rgba(200,16,46,0.05); }
+  .stage-card.done { border-color: rgba(74,222,128,0.4); }
+  .stage-card.idle { opacity: 0.6; }
+  .stage-num { font-size: 9.5px; letter-spacing: 0.22em; color: var(--ink-3); text-transform: uppercase; }
+  .stage-name { font-family: 'Bebas Neue', serif; font-size: 16px; letter-spacing: 0.06em; color: #fff; margin-top: 2px; }
+  .stage-desc { font-size: 10.5px; color: var(--ink-3); margin-top: 6px; line-height: 1.5; min-height: 28px; }
+  .stage-bar { margin-top: 10px; height: 3px; background: var(--bg-3); border-radius: 99px; overflow: hidden; }
+  .stage-bar-fill { height: 100%; background: linear-gradient(90deg, var(--crimson), var(--gold)); border-radius: 99px; transition: width 400ms ease; position: relative; }
+  .stage-bar-fill::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmer 1.6s infinite linear; }
+  .stage-card.done .stage-bar-fill { background: var(--good); }
+  .stage-card.done .stage-bar-fill::after { display: none; }
+  .stage-card.idle .stage-bar-fill::after { display: none; }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
+    border: 1px solid currentColor;
+  }
+  .badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .badge.queued { color: var(--info); background: rgba(106,169,255,0.08); }
+  .badge.running { color: var(--crimson); background: rgba(200,16,46,0.1); }
+  .badge.done { color: var(--good); background: rgba(74,222,128,0.08); }
+  .badge.scheduled { color: var(--gold); background: rgba(212,175,55,0.08); }
+  .badge.failed { color: var(--bad); background: rgba(239,68,68,0.08); }
+  .badge.pending { color: var(--ink-3); background: rgba(255,255,255,0.03); }
+
+  /* Cast row */
+  .cast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cast-row {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: 4px; padding: 12px 14px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  }
+  .spk-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--gold); letter-spacing: 0.06em;
+    border: 1px solid rgba(212,175,55,0.3);
+    padding: 5px 9px; border-radius: 3px; background: rgba(212,175,55,0.05);
+  }
+  .mini-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--crimson-dim), var(--crimson));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', serif; font-size: 13px; color: #fff;
+    box-shadow: 0 0 0 1px var(--bg), 0 0 0 2px var(--gold-dim);
+  }
+  .mini-wave {
+    height: 18px; display: flex; align-items: center; gap: 2px;
+  }
+  .mini-wave span {
+    width: 2px; background: var(--gold-dim); border-radius: 99px;
+    animation: bounce 1.4s ease-in-out infinite;
+  }
+  .mini-wave span:nth-child(1) { animation-delay: 0s; height: 30%; }
+  .mini-wave span:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+  .mini-wave span:nth-child(3) { animation-delay: 0.2s; height: 90%; }
+  .mini-wave span:nth-child(4) { animation-delay: 0.3s; height: 60%; }
+  .mini-wave span:nth-child(5) { animation-delay: 0.4s; height: 40%; }
+  @keyframes bounce { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
+
+  /* Library */
+  .lib-card {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: 6px; overflow: hidden; cursor: pointer;
+    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .lib-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--crimson);
+    box-shadow: 0 12px 32px -16px var(--crimson-glow), 0 0 0 1px rgba(200,16,46,0.4);
+  }
+  .lib-thumb {
+    aspect-ratio: 16/9;
+    background: repeating-linear-gradient(45deg, #15151f 0 8px, #181826 8px 16px);
+    position: relative; border-bottom: 1px solid var(--line);
+    background-size: cover; background-position: center;
+  }
+  .lib-thumb.has-img::after { display: none; }
+  .lib-thumb.has-img { background-repeat: no-repeat; }
+  .lib-thumb.has-img::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 30%, transparent 65%, rgba(0,0,0,0.65) 100%);
+  }
+  .lib-thumb::after {
+    content: attr(data-letter); position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', serif; font-size: 80px; color: rgba(212,175,55,0.18);
+  }
+  .play-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 200ms ease;
+  }
+  .lib-card:hover .play-overlay { opacity: 1; }
+  .play-icon {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--crimson);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 28px var(--crimson-glow);
+  }
+  .lib-meta { padding: 14px 16px; }
+  .lib-title { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 4px; line-height: 1.3; }
+  .lib-sub { font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; font-family: 'JetBrains Mono', monospace; display: flex; gap: 10px; }
+  .lib-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .lib-tag {
+    font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 2px;
+    background: rgba(212,175,55,0.08); color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.25);
+    transition: all 140ms ease;
+  }
+  .lib-tag:hover { background: rgba(200,16,46,0.15); color: #fff; border-color: var(--crimson); }
+  .thumb-tags { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 2; }
+  .thumb-tag {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;
+    padding: 3px 7px; border-radius: 2px;
+    background: rgba(8,8,16,0.78); color: #fff;
+    border: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(4px);
+  }
+  .lib-card-actions {
+    position: absolute; top: 10px; right: 10px; display: flex; gap: 6px;
+    opacity: 0; transition: opacity 200ms ease; z-index: 3;
+  }
+  .lib-card:hover .lib-card-actions { opacity: 1; }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 4px;
+    background: rgba(8,8,16,0.85); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .icon-btn:hover { background: var(--crimson); border-color: var(--crimson); }
+
+  /* Thumbnail editor modal */
+  .thumb-modal-card {
+    width: min(560px, 92vw);
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 24px;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.7);
+  }
+  .thumb-preview {
+    aspect-ratio: 16/9; border-radius: 4px;
+    background: repeating-linear-gradient(45deg, #15151f 0 8px, #181826 8px 16px);
+    background-size: cover; background-position: center;
+    border: 1px solid var(--line);
+    position: relative; overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .thumb-preview .placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', serif; font-size: 90px; color: rgba(212,175,55,0.2);
+  }
+
+  /* Character cards */
+  .char-card {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: 6px; padding: 18px; text-align: center;
+    transition: border-color 200ms ease;
+    position: relative;
+  }
+  .char-card:hover { border-color: var(--gold-dim); }
+  .char-avatar {
+    width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', serif; font-size: 26px; color: #fff;
+    background: linear-gradient(135deg, var(--crimson-dim), var(--crimson));
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--gold-dim);
+    letter-spacing: 0.04em;
+  }
+  .char-name { font-size: 15px; font-weight: 500; color: #fff; }
+  .char-show { font-size: 10.5px; color: var(--gold); margin-top: 3px; letter-spacing: 0.08em; }
+  .char-file { font-size: 10px; color: var(--ink-3); margin-top: 6px; font-family: 'JetBrains Mono', monospace; word-break: break-all; line-height: 1.4; }
+  .char-remove {
+    position: absolute; top: 10px; right: 10px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: transparent; border: 1px solid var(--line-2); color: var(--ink-3);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 160ms ease;
+  }
+  .char-remove:hover { color: var(--crimson); border-color: var(--crimson); background: rgba(200,16,46,0.1); }
+  .char-fav {
+    position: absolute; top: 10px; left: 10px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: transparent; border: 0; color: var(--ink-3);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 160ms ease;
+  }
+  .char-fav:hover { color: var(--gold); }
+  .char-fav.on { color: var(--gold); }
+  .char-actions { display: flex; gap: 6px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .usage-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-3); margin-top: 8px;
+  }
+  .usage-pill b { color: var(--gold); font-family: 'JetBrains Mono', monospace; }
+
+  /* Audio waveform placeholder */
+  .wave-strip {
+    height: 32px; background: var(--bg-2); border-radius: 3px;
+    border: 1px solid var(--line); padding: 4px 8px;
+    display: flex; align-items: center; gap: 1.5px; margin-top: 8px;
+  }
+  .wave-strip span {
+    flex: 1; background: var(--gold-dim); border-radius: 1px; opacity: 0.7;
+  }
+  .wave-strip.playing span { background: var(--crimson); animation: wavePulse 0.9s ease-in-out infinite; }
+  @keyframes wavePulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+  /* Animated stem waveform */
+  .stem-wave {
+    display: flex; align-items: center; gap: 2px;
+    height: 40px; padding: 0 4px;
+  }
+  .stem-wave-bar {
+    width: 3px; border-radius: 2px; background: #2a2a3a;
+    transition: background 200ms ease;
+  }
+  .stem-wave.active .stem-wave-bar { background: var(--crimson); }
+  @keyframes waveBar {
+    0%, 100% { transform: scaleY(0.25); }
+    50%       { transform: scaleY(1); }
+  }
+  @keyframes indeterminate {
+    0%   { transform: translateX(-100%) scaleX(0.4); }
+    50%  { transform: translateX(50%)   scaleX(0.6); }
+    100% { transform: translateX(200%)  scaleX(0.4); }
+  }
+
+  /* Toggle */
+  .toggle {
+    width: 42px; height: 22px; border-radius: 999px; background: var(--bg-3);
+    border: 1px solid var(--line-2); position: relative; cursor: pointer;
+    transition: background 200ms ease, border-color 200ms ease;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: var(--ink-2);
+    transition: transform 200ms ease, background 200ms ease;
+  }
+  .toggle.on { background: rgba(200,16,46,0.25); border-color: var(--crimson); }
+  .toggle.on::after { transform: translateX(20px); background: var(--crimson); box-shadow: 0 0 8px var(--crimson-glow); }
+
+  /* Slider */
+  .slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; background: var(--bg-3);
+    border-radius: 99px; outline: none;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--crimson); border: 2px solid #1a0508;
+    box-shadow: 0 0 8px var(--crimson-glow);
+    cursor: pointer;
+  }
+  .slider::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--crimson); border: 2px solid #1a0508; cursor: pointer;
+  }
+
+  .seg { display: inline-flex; background: var(--bg-1); border: 1px solid var(--line); border-radius: 4px; padding: 3px; }
+  .seg button { background: transparent; border: 0; color: var(--ink-2); padding: 7px 14px; font-size: 12px; letter-spacing: 0.08em; border-radius: 3px; }
+  .seg button.on { background: var(--crimson); color: #fff; box-shadow: 0 0 12px -4px var(--crimson-glow); }
+
+  /* Modal */
+  .modal-veil {
+    position: fixed; inset: 0; background: rgba(2,2,8,0.92);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    animation: veil 200ms ease-out;
+  }
+  @keyframes veil { from { opacity: 0; } to { opacity: 1; } }
+  .modal-head {
+    width: min(1100px, 90vw); display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 14px;
+  }
+  .modal-title { font-family: 'Bebas Neue', serif; font-size: 26px; letter-spacing: 0.06em; color: #fff; margin: 0; }
+  .modal-close {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-2); border: 1px solid var(--line-2); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { color: var(--crimson); border-color: var(--crimson); }
+  .modal-video {
+    width: min(1100px, 90vw); aspect-ratio: 16/9; background: #000;
+    border: 1px solid var(--line); border-radius: 4px;
+    box-shadow: 0 0 80px -20px var(--crimson-glow);
+  }
+
+  /* Toasts */
+  .toasts { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 200; pointer-events: none; }
+  .toast { pointer-events: all;
+    min-width: 320px; max-width: 520px;
+    background: var(--bg-2); border: 1px solid var(--line-2);
+    border-left: 3px solid var(--crimson);
+    border-radius: 4px; padding: 12px 16px;
+    box-shadow: 0 16px 32px -12px rgba(0,0,0,0.7);
+    animation: slideIn 240ms cubic-bezier(.2,.7,.2,1);
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  @keyframes slideIn { from { transform: translateY(-12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .toast.success { border-left-color: var(--good); }
+  .toast.error { border-left-color: var(--bad); }
+  .toast.info { border-left-color: var(--info); }
+  .toast-title { font-size: 13px; font-weight: 500; color: #fff; }
+  .toast-msg { font-size: 12px; color: var(--ink-2); margin-top: 2px; line-height: 1.5; }
+  .toast-ico { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+
+  .empty { padding: 36px; text-align: center; color: var(--ink-3); font-size: 12.5px; letter-spacing: 0.08em; border: 1px dashed var(--line); border-radius: 6px; }
+
+  /* Checklist */
+  .checklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .checkitem {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-left: 3px solid var(--bad);
+    border-radius: 4px; padding: 12px;
+  }
+  .checkitem.ok { border-left-color: var(--good); }
+  .checkitem-label { font-size: 11px; letter-spacing: 0.12em; color: var(--ink-3); text-transform: uppercase; }
+  .checkitem-status { font-family: 'Bebas Neue', serif; font-size: 18px; margin-top: 2px; color: var(--bad); }
+  .checkitem.ok .checkitem-status { color: var(--good); }
+
+  /* Transcript line */
+  .line {
+    background: var(--bg-1); border: 1px solid var(--line);
+    border-radius: 4px; padding: 14px 16px; margin-bottom: 8px;
+    transition: border-color 160ms ease;
+  }
+  .line.sel { border-color: var(--crimson); box-shadow: 0 0 0 1px rgba(200,16,46,0.35); }
+  .line-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .line-meta { display: flex; gap: 10px; align-items: center; font-size: 11.5px; }
+  .line-num { font-family: 'JetBrains Mono', monospace; color: var(--ink-3); }
+  .line-spk { font-family: 'JetBrains Mono', monospace; color: var(--gold); letter-spacing: 0.04em; }
+  .line-arr { color: var(--ink-3); }
+  .line-char { color: #fff; font-weight: 500; }
+  .line-time { font-family: 'JetBrains Mono', monospace; color: var(--ink-3); font-size: 10.5px; letter-spacing: 0.06em; }
+  .line-row { display: grid; grid-template-columns: 60px 1fr; gap: 12px; align-items: center; padding: 4px 0; }
+  .line-row .lab { font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); }
+  .line-text-raw { font-size: 13px; color: var(--ink-2); font-style: italic; }
+  .line-text-tr { font-size: 13px; color: var(--ink); }
+  .line-emotion { font-size: 13px; color: var(--ink); padding: 8px 10px; background: var(--bg-2); border-radius: 3px; border-left: 2px solid var(--crimson); }
+  .line-emotion mark { background: rgba(212,175,55,0.15); color: var(--gold); padding: 0 4px; border-radius: 2px; }
+
+  /* Log */
+  .log {
+    background: #06060c; border: 1px solid var(--line); border-radius: 4px;
+    padding: 14px 16px; max-height: 280px; overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.6;
+  }
+  .log .ts { color: var(--ink-3); }
+  .log .stage1 { color: var(--info); }
+  .log .stage2 { color: var(--gold); }
+  .log .stage3 { color: var(--crimson); }
+  .log .stage4 { color: var(--good); }
+
+  .api-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .reveal-btn { padding: 0 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 4px; color: var(--ink-2); font-size: 11px; letter-spacing: 0.12em; }
+  .reveal-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+  .file-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 12px; background: var(--bg-2);
+    border: 1px solid var(--line); border-radius: 4px;
+    font-size: 12px; color: var(--ink-2); margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;
+  }
+  .file-pill .gold { color: var(--gold); }
+
+  /* ============ NEW (v3) STRUCTURE STYLES ============ */
+  /* Stage lock footer */
+  .lock-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .lock-note { font-size: 11.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+  .lock-note .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); }
+  .lock-note.locked .dot { background: var(--good); box-shadow: 0 0 8px var(--good); }
+
+  /* Stage header inline status */
+  .stage-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+  .stage-head .panel-title { margin: 0; }
+
+  /* Source media options */
+  .media-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .media-opt {
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 6px;
+    padding: 18px; position: relative; transition: border-color 160ms ease;
+  }
+  .media-opt:hover { border-color: var(--gold-dim); }
+  .media-opt .tag-letter {
+    position: absolute; top: 14px; right: 16px;
+    font-family: 'Bebas Neue', serif; font-size: 30px; color: rgba(212,175,55,0.18); line-height: 1;
+  }
+  .media-opt h4 { font-family: 'Bebas Neue', serif; font-size: 17px; letter-spacing: 0.08em; color: #fff; margin: 0 0 4px; font-weight: 400; }
+  .media-opt .desc { font-size: 11.5px; color: var(--ink-3); line-height: 1.5; margin-bottom: 14px; min-height: 32px; }
+
+  .clip-note {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.22);
+    border-radius: 4px; padding: 12px 14px; margin-top: 16px;
+    font-size: 11.5px; color: var(--ink-2); line-height: 1.6;
+  }
+  .clip-note b { color: var(--gold); }
+
+  /* Conveyor (isolation) result rows */
+  .stem-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 4px;
+    padding: 12px 14px; margin-bottom: 8px;
+  }
+  .stem-check {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.4); color: var(--good);
+  }
+  .stem-name { font-size: 13px; color: #fff; }
+  .stem-path { font-size: 10.5px; color: var(--ink-3); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+  /* Project / episode cards */
+  .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .proj-card {
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 6px;
+    overflow: hidden; cursor: pointer; transition: all 180ms ease; text-align: left;
+    padding: 0;
+  }
+  .proj-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .proj-card.active { border-color: var(--crimson); box-shadow: 0 0 0 1px rgba(200,16,46,0.4), 0 12px 30px -18px var(--crimson-glow); }
+  .proj-poster {
+    aspect-ratio: 16/9; position: relative;
+    background: repeating-linear-gradient(45deg, #15151f 0 8px, #181826 8px 16px);
+    background-size: cover; background-position: center;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .proj-poster .glyph-letter { font-family: 'Bebas Neue', serif; font-size: 56px; color: rgba(212,175,55,0.2); }
+  .proj-body { padding: 12px 14px; }
+  .proj-name { font-size: 13.5px; color: #fff; font-weight: 500; line-height: 1.3; }
+  .proj-meta { font-size: 10.5px; color: var(--ink-3); margin-top: 4px; letter-spacing: 0.04em; }
+
+  /* Episode list inside project */
+  .ep-strip { display: flex; flex-direction: column; gap: 8px; }
+  .ep-row {
+    display: grid; grid-template-columns: auto 1fr auto auto; gap: 14px; align-items: center;
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 4px;
+    padding: 11px 14px; transition: border-color 160ms ease;
+  }
+  .ep-row.active { border-color: var(--crimson); }
+  .ep-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: 0.04em; }
+  .ep-title { font-size: 13px; color: #fff; }
+
+  .add-card {
+    border: 1.5px dashed var(--line-2); border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; color: var(--ink-3); cursor: pointer; transition: all 160ms ease;
+    min-height: 100%; padding: 24px; text-align: center;
+  }
+  .add-card:hover { border-color: var(--crimson); color: var(--gold); background: rgba(200,16,46,0.03); }
+
+  /* Library show section */
+  .show-section { margin-bottom: 36px; }
+  .show-section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; }
+  .show-section-head h3 { font-family: 'Bebas Neue', serif; font-size: 24px; letter-spacing: 0.05em; color: #fff; margin: 0; font-weight: 400; }
+  .show-section-head .meta { font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em; }
+
+  /* Episode poster card (library) */
+  .ep-card {
+    background: var(--bg-1); border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .ep-card.done { cursor: pointer; }
+  .ep-card.done:hover {
+    transform: translateY(-3px); border-color: var(--crimson);
+    box-shadow: 0 12px 32px -16px var(--crimson-glow), 0 0 0 1px rgba(200,16,46,0.4);
+  }
+  .ep-card.empty { border-style: dashed; }
+  .ep-card .ep-actions { display: flex; gap: 6px; padding: 0 14px 14px; }
+  .ep-status-bar {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px 0;
+    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .ep-status-bar.complete { color: var(--good); }
+  .ep-status-bar.empty { color: var(--ink-3); }
+
+  /* Avatar voice-test panel */
+  .mono-para {
+    font-size: 12.5px; color: var(--ink-2); line-height: 1.7;
+    background: var(--bg-2); border-left: 2px solid var(--gold-dim);
+    padding: 12px 14px; border-radius: 0 4px 4px 0; font-style: italic;
+  }
+  .vtest {
+    margin-top: 12px; padding: 14px; border: 1px solid var(--line);
+    border-radius: 4px; background: var(--bg-1);
+  }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+const Ico = {
+  studio: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 8l-6 4 6 4z"/></svg>,
+  vault: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M3 11a9 9 0 1 1 18 0v6a3 3 0 0 1-3 3h-1v-7h4M3 13h4v7H6a3 3 0 0 1-3-3z"/></svg>,
+  library: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/><path d="M7 21h10"/></svg>,
+  settings: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h.1a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>,
+  upload: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>,
+  play: (p) => <svg viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M7 5l12 7-12 7z"/></svg>,
+  close: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}><path d="M6 6l12 12M18 6L6 18"/></svg>,
+  check: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M5 13l4 4L19 7"/></svg>,
+  alert: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>,
+  info: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>,
+  download: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>,
+  image: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>,
+  trash: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>,
+  regen: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>,
+  scissors: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"/></svg>,
+  folder: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>,
+  film: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4M3 12h18"/></svg>,
+  star: (p) => <svg viewBox="0 0 24 24" fill="currentColor" {...p}><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>,
+  starO: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>,
+  search: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>,
+  link: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>,
+  plus: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M12 5v14M5 12h14"/></svg>,
+  sliders: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>,
+  mic: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4"/></svg>,
+  doc: (p) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg>,
+};
+
+/* The standardized voice-test paragraph (Avatar: TLA intro) */
+const AVATAR_MONOLOGUE = "Water. Earth. Fire. Air. Long ago, the four nations lived together in harmony. Then, everything changed when the Fire Nation attacked. Only the Avatar, master of all four elements, could stop them, but when the world needed him most, he vanished.";
+
+const fmtTime = (s) => { const m = Math.floor(s/60); const sec = (s%60).toFixed(2).padStart(5,'0'); return `${m}:${sec}`; };
+const fmtSize = (mb) => mb >= 1000 ? `${(mb/1000).toFixed(1)} GB` : `${mb} MB`;
+const slugify = (s) => (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'') || 'project';
+const waveHeights = (seed, n=38) => Array.from({length:n}).map((_,k)=>20+Math.abs(Math.sin(k*0.6+seed*1.3))*70);
+
+/* Animated waveform bar component ” static when idle, animates when playing */
+const WAVE_HEIGHTS = [30,55,80,65,45,90,50,35,70,85,40,60,95,45,75,55,30,80,65,50,85,40,70,55,90,35,60,80,45,70,55,35,80,60,45,85,50,65];
+function AnimWaveform({ active, seed = 0, barCount = 38 }) {
+  const heights = React.useMemo(() =>
+    Array.from({ length: barCount }, (_, k) =>
+      20 + Math.abs(Math.sin(k * 0.6 + seed * 1.3)) * 75
+    ), [barCount, seed]);
+  return (
+    <div className={`stem-wave${active ? ' active' : ''}`}>
+      {heights.map((h, k) => {
+        const delay = ((k * 0.07 + seed * 0.13) % 1).toFixed(3);
+        const dur   = (0.55 + ((k * 37 + seed * 17) % 40) / 100).toFixed(2);
+        return (
+          <div
+            key={k}
+            className="stem-wave-bar"
+            style={{
+              height: h * 0.38 + 'px',
+              transformOrigin: 'center',
+              animation: active ? `waveBar ${dur}s ${delay}s ease-in-out infinite` : 'none',
+              transform: active ? undefined : `scaleY(1)`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* =============================================================
+   DEMO DATA ” Smoking Behind the Supermarket With You
+============================================================= */
+const SMOKING_SLUG = 'smoking_behind_the_supermarket_with_you';
+
+const GLOBAL_VOICES = [
+  { id: 'dante_basco',   name: 'Dante Basco',   gender: 'Male',   domain: 'global', show: 'Global Roster', file: 'characters/global_roster/dante_basco/avatar_monologue.wav',   notes: 'Zuko / Rufio. Teen rebel energy, hot-headed intensity.', fav: true,  usage: 14 },
+  { id: 'rihanna',       name: 'Rihanna',       gender: 'Female', domain: 'global', show: 'Global Roster', file: 'characters/global_roster/rihanna/avatar_monologue.wav',       notes: 'Confident, commanding. Warm low register.',             fav: false, usage: 3  },
+  { id: 'tara_strong',   name: 'Tara Strong',   gender: 'Female', domain: 'global', show: 'Global Roster', file: 'characters/global_roster/tara_strong/avatar_monologue.wav',   notes: 'Versatile VA. Wide emotional range, bright upper.',     fav: true,  usage: 21 },
+  { id: 'zeno_robinson', name: 'Zeno Robinson', gender: 'Male',   domain: 'global', show: 'Global Roster', file: 'characters/global_roster/zeno_robinson/avatar_monologue.wav', notes: 'Hawks / Xenovia. Smooth, charismatic, youthful.',       fav: false, usage: 9  },
+];
+
+const SHOW_VOICES = [
+  { id: 'sasaki', name: 'Sasaki', gender: 'Male',   domain: 'show', show: 'Smoking Behind the Supermarket With You', showSlug: SMOKING_SLUG, file: `characters/shows/${SMOKING_SLUG}/sasaki/avatar_monologue.wav`, notes: 'Tired office worker. Low, weary, dry delivery. Cloned from S01E01.', fav: false, usage: 1 },
+  { id: 'yamada', name: 'Yamada', gender: 'Female', domain: 'show', show: 'Smoking Behind the Supermarket With You', showSlug: SMOKING_SLUG, file: `characters/shows/${SMOKING_SLUG}/yamada/avatar_monologue.wav`, notes: 'Convenience-store clerk. Bright, teasing, secretly soft. Cloned from S01E01.', fav: true, usage: 1 },
+];
+
+/* pyannote can't read names ” it returns SPEAKER_xx. Gender is estimated from pitch/formants. */
+const SPEAKER_GENDER = { SPEAKER_00: 'Male', SPEAKER_01: 'Female', SPEAKER_02: 'Male', SPEAKER_03: 'Female', SPEAKER_04: 'Female' };
+
+/* Songs (OP/ED themes) are flagged isSong → left untranslated, original audio kept. */
+const SMOKING_SEGMENTS = [
+  { id: 0, start: 0,    end: 9.0,   speaker: 'MUSIC',      isSong: true, kind: 'Opening theme', text: '♪ ã‚ªãƒ¼ãƒ—ãƒ‹ãƒ³ã‚°ãƒ†ãƒ¼ãƒž' },
+  { id: 1, start: 9.2,  end: 11.8,  speaker: 'SPEAKER_00', text: 'ã¾ãŸã“ã®æ™‚é–“ã‹…',          translated_text: "It's this time again, huh…",      emotion_line: '[tired sigh] It’s this hour again, huh…' },
+  { id: 2, start: 12.0, end: 14.2,  speaker: 'SPEAKER_01', text: 'ã„ã‚‰ã£ã—ã‚ƒã„ã¾ã›ã€‚',         translated_text: 'Welcome.',                       emotion_line: '[bright, customer-service tone] Welcome in!' },
+  { id: 3, start: 14.5, end: 17.3,  speaker: 'SPEAKER_00', text: 'ä»Šæ—¥ã¯ç…™è‰ã ã‘ã§ã„ã„ã€‚',     translated_text: 'Just cigarettes today.',          emotion_line: '[flat, weary] Just the cigarettes today.' },
+  { id: 4, start: 17.6, end: 20.7,  speaker: 'SPEAKER_01', text: 'å…ˆè¼©ã€é¡”è‰²æ‚ªã„ã§ã™ã‚ˆã€‚',     translated_text: 'You look pale, senpai.',          emotion_line: '[teasing, soft concern] You look kinda pale, senpai.' },
+  { id: 5, start: 21.0, end: 23.2,  speaker: 'SPEAKER_00', text: 'ã»ã£ã¨ã„ã¦ãã‚Œã€‚',           translated_text: 'Leave me alone.',                 emotion_line: '[grumbling, no real bite] Just… leave me be.' },
+  { id: 6, start: 23.5, end: 26.6,  speaker: 'SPEAKER_01', text: 'ã¾ãŸè£ã§å¾…ã£ã¦ã¾ã™ã€‚',       translated_text: "I'll be waiting out back again.",  emotion_line: '[playful whisper] I’ll be waiting out back again.' },
+  { id: 7, start: 1380, end: 1452,  speaker: 'MUSIC',      isSong: true, kind: 'Ending theme', text: '♪ ã‚¨ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ãƒ†ãƒ¼ãƒž' },
+];
+const isDialogue = (s) => !s.isSong;
+
+/* Projects hold pre-created episodes. status: 'complete' | 'in_progress' | 'empty' */
+const DEFAULT_PROJECTS = [
+  {
+    id: 'p_smoking', title: 'Smoking Behind the Supermarket With You', format: 'Series',
+    genres: ['Slice of Life', 'Romance'], year: '2023', slug: SMOKING_SLUG, thumb: null,
+    episodes: [
+      { id: 'e1', label: 'S01E01', name: 'The Usual Time', status: 'empty' },
+      { id: 'e2', label: 'S01E02', name: 'Behind the Store', status: 'empty' },
+      { id: 'e3', label: 'S01E03', name: 'Smoke Break', status: 'empty' },
+    ],
+  },
+  {
+    id: 'p_200', title: '200 Pound Beauty', format: 'Series',
+    genres: ['Romance'], year: '2006', slug: '200_pound_beauty', thumb: null,
+    episodes: [
+      { id: 'b1', label: 'S01E01', name: 'Episode 1', status: 'empty' },
+      { id: 'b2', label: 'S01E02', name: 'Episode 2', status: 'empty' },
+    ],
+  },
+];
+
+/* =============================================================
+   APP
+============================================================= */
+function App() {
+  const [page, setPage] = useState('studio');
+  const [characters, setCharacters] = useState([...GLOBAL_VOICES, ...SHOW_VOICES]);
+
+  // Load real cloned voices from disk on mount
+  const refreshCharacters = React.useCallback(() => {
+    fetch('/api/characters').then(r => r.json()).then(data => {
+      setCharacters(prev => {
+        const byId = new Map(prev.map(c => [c.id, c]));
+        const merge = (entry) => {
+          if (!byId.has(entry.id)) {
+            byId.set(entry.id, { fav: false, usage: 0, notes: '', quality: 'okay', substituteFor: [], ...entry });
+          } else {
+            // Preserve user-set fields, but update disk-derived ones
+            const existing = byId.get(entry.id);
+            byId.set(entry.id, { ...existing, file: entry.file, samplePath: entry.samplePath || existing.samplePath, clonedAt: entry.clonedAt || existing.clonedAt });
+          }
+        };
+        (data.global || []).forEach(merge);
+        Object.values(data.shows || {}).flat().forEach(merge);
+        return Array.from(byId.values());
+      });
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => { refreshCharacters(); }, []);
+  const [projects, setProjects] = useState(DEFAULT_PROJECTS);
+  const [toasts, setToasts] = useState([]);
+  const [playing, setPlaying] = useState(null);
+  const [wsOk, setWsOk] = useState(true);
+  // Job lives here so it survives tab navigation
+  const [job, setJob] = useState(() => freshJob(null, null));
+  const updJob = useCallback((patch) => setJob(j => ({ ...j, ...patch })), []);
+
+  const [config, setConfig] = useState({
+    ollamaUrl: 'http://localhost:11434',
+    ollamaModel: 'llama3.1:8b',
+    whisperModel: 'large-v3',
+    outputDir: 'workspace/5_outputs',
+    indexttsDir: 'C:/Users/shani/Desktop/IndexTTS2',
+    condaEnv: 'sonitr',
+    hfToken: 'hf_•••••••••••••••••••••••••••••',
+  });
+
+  const sysCheck = { ffmpeg: true, demucs: true, whisper: true, ollama: true, indextts: true };
+
+  const pushToast = useCallback((toast) => {
+    const id = Math.random().toString(36).slice(2);
+    setToasts((t) => [...t, { id, ...toast }]);
+    setTimeout(() => setToasts((t) => t.filter(x => x.id !== id)), 4500);
+  }, []);
+
+  useEffect(() => {
+    const check = () => fetch('/api/status').then(r => setWsOk(r.ok)).catch(() => setWsOk(false));
+    check();
+    const t = setInterval(check, 9000);
+    return () => clearInterval(t);
+  }, []);
+
+  const tabs = [
+    { id: 'studio', label: 'Dub Studio', ico: Ico.studio },
+    { id: 'vault', label: 'Character Vault', ico: Ico.vault },
+    { id: 'library', label: 'Library', ico: Ico.library },
+    { id: 'settings', label: 'Settings', ico: Ico.settings },
+  ];
+
+  return (
+    <div className="app">
+      <aside className="sidebar">
+        <div className="logo">
+          <h1>YANFLIX</h1>
+          <div className="tag">Private Dubbing Suite</div>
+          <div className="bar"></div>
+        </div>
+        <nav className="nav">
+          {tabs.map(t => (
+            <div key={t.id} className={'nav-item' + (page === t.id ? ' active' : '')} onClick={() => setPage(t.id)}>
+              <t.ico className="ico" /><span>{t.label}</span>
+            </div>
+          ))}
+        </nav>
+        <div className="sys">
+          <div className="sys-row"><span>FFmpeg</span><span className={sysCheck.ffmpeg ? 'sys-ok' : 'sys-bad'}>{sysCheck.ffmpeg ? 'READY' : 'MISSING'}</span></div>
+          <div className="sys-row"><span>Demucs</span><span className={sysCheck.demucs ? 'sys-ok' : 'sys-bad'}>{sysCheck.demucs ? 'READY' : 'MISSING'}</span></div>
+          <div className="sys-row"><span>Whisper</span><span className={sysCheck.whisper ? 'sys-ok' : 'sys-bad'}>{sysCheck.whisper ? 'READY' : 'MISSING'}</span></div>
+          <div className="sys-row"><span>Ollama</span><span className={sysCheck.ollama ? 'sys-ok' : 'sys-bad'}>{sysCheck.ollama ? 'READY' : 'OFFLINE'}</span></div>
+          <div className="sys-row"><span>IndexTTS</span><span className={sysCheck.indextts ? 'sys-ok' : 'sys-bad'}>{sysCheck.indextts ? 'READY' : 'MISSING'}</span></div>
+          <div className="ws-row">
+            <span className={'ws-dot' + (wsOk ? '' : ' bad')}></span>
+            <span>{wsOk ? 'Local · Connected' : 'Reconnecting'}</span>
+          </div>
+        </div>
+      </aside>
+
+      <main className="main">
+        {page === 'studio' && <DubStudio job={job} setJob={setJob} updJob={updJob} characters={characters} setCharacters={setCharacters} projects={projects} setProjects={setProjects} pushToast={pushToast} sysCheck={sysCheck} config={config} refreshCharacters={refreshCharacters} />}
+        {page === 'vault' && <CharacterVault characters={characters} setCharacters={setCharacters} pushToast={pushToast} />}
+        {page === 'library' && <Library projects={projects} setProjects={setProjects} onPlay={(v) => setPlaying(v)} pushToast={pushToast} onGoStudio={() => setPage('studio')} />}
+        {page === 'settings' && <Settings config={config} setConfig={setConfig} pushToast={pushToast} sysCheck={sysCheck} />}
+      </main>
+
+      {playing && <VideoModal video={playing} onClose={() => setPlaying(null)} />}
+      <Toasts toasts={toasts} onDismiss={(id) => setToasts((t) => t.filter(x => x.id !== id))} />
+    </div>
+  );
+}
+
+/* =============================================================
+   DUB STUDIO ” 8-stage resumable pipeline
+============================================================= */
+function freshJob(project, episode) {
+  return {
+    projectId: project ? project.id : null,
+    projectTitle: project ? project.title : '',
+    projectFormat: project ? project.format : 'Series',
+    genres: project ? project.genres : [],
+    year: project ? project.year : '',
+    slug: project ? project.slug : '',
+    episodeId: episode ? episode.id : null,
+    episodeLabel: episode ? episode.label : '',
+    episodeName: episode ? episode.name : '',
+    // source
+    sourceMethod: 'upload', youtubeUrl: '',
+    media: null, // {name, duration, size, tracks}
+    mediaUrl: null,      // object URL for browser playback
+    mediaExt: '.m4a',    // original file extension
+    episodeFolder: '',   // filename stem, e.g. smoking_supermarket_s01e01
+    // isolation
+    isolated: false, isolating: false,
+    vocalsUrl: null,     // object URL ” same as mediaUrl in UI prototype
+    bgUrl: null,
+    // speakers (auto-detected by pyannote)
+    speakersDetected: false, diarizing: false, detectedSpeakers: [], speakerSamples: {}, speakerMerges: {}, numSpeakers: 0, assignments: {}, songSpeakers: {},
+    // script
+    segments: [], transcribed: false, translated: false, translated_dialect: false, directed: false, directed_dialect: false,
+    transcriptReady: false,
+    // voices
+    voicesDone: false, lineDone: {},
+    // mixer
+    dubVol: 1.0, bgVol: 0.85, stretchMin: 0.6, stretchMax: 1.8, ollamaChunk: 20, nvenc: true,
+    // export
+    exported: false, outputPath: '',
+  };
+}
+
+/* Pre-load the Smoking S01E01 job mid-pipeline so the resumable workflow is visible */
+function smokingInProgressJob() {
+  const p = DEFAULT_PROJECTS[0];
+  return freshJob(p, p.episodes[0]);
+}
+
+/* Order of pipeline stages for Back/Next nav */
+const STAGE_ORDER = ['project', 'source', 'isolate', 'speakers', 'script', 'voices', 'mixer', 'export'];
+
+/* Map display language names → Whisper language codes */
+const LANG_CODE = {
+  'Japanese':             'ja',
+  'Spanish':              'es',
+  'Chinese (Mandarin)':   'zh',
+  'Chinese (Cantonese)':  'yue',
+  'Korean':               'ko',
+  'French':               'fr',
+  'Portuguese':           'pt',
+  'Italian':              'it',
+  'German':               'de',
+  'Arabic':               'ar',
+  'Hindi':                'hi',
+  'Thai':                 'th',
+  'Vietnamese':           'vi',
+  'Indonesian':           'id',
+  'Russian':              'ru',
+  'Turkish':              'tr',
+};
+
+function DubStudio({ job, setJob, updJob, characters, setCharacters, projects, setProjects, pushToast, sysCheck, config, refreshCharacters }) {
+  const [sub, setSub] = useState('project');
+  const upd = updJob;
+  const [wf1Firing, setWf1Firing] = useState(false);
+  const [wf2Firing, setWf2Firing] = useState(false);
+  const [wf3Firing, setWf3Firing] = useState(false);
+
+  const triggerWorkflow = async (webhookPath, payload, wfLabel, setFiring) => {
+    setFiring(true);
+    try {
+      const res = await fetch(`http://localhost:5678/webhook/${webhookPath}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`n8n responded ${res.status}`);
+      pushToast({ kind: 'success', title: `${wfLabel} started`, msg: `Running for ${job.episodeLabel} — watch n8n at localhost:5678` });
+    } catch (e) {
+      pushToast({ kind: 'error', title: `${wfLabel} failed to start`, msg: e.message || 'Could not reach n8n — is Docker running?' });
+    } finally {
+      setFiring(false);
+    }
+  };
+
+  const epFolder = slugify(job.episodeFolder || job.episodeName);
+  const srcLang  = LANG_CODE[job.sourceLang] || 'ja';
+
+  const launchWF1 = () => triggerWorkflow(
+    'harvest-characters',
+    { show_name: job.projectTitle, ep_folder: epFolder, source_lang: srcLang },
+    'WF1: Voice Bank',
+    setWf1Firing
+  );
+
+  const launchWF2 = () => {
+    const rawFileName = job.media?.name || '';
+    if (!rawFileName) {
+      pushToast({ kind: 'error', title: 'Select a source file first', msg: 'Go to Source Media and pick or download a file before running WF2.' });
+      return;
+    }
+    triggerWorkflow(
+      'script-director',
+      { show_name: job.projectTitle, episode_id: job.episodeLabel, ep_folder: epFolder, raw_file_name: rawFileName, source_lang: srcLang },
+      'WF2: Script Director',
+      setWf2Firing
+    );
+  };
+
+  const launchWF3 = () => triggerWorkflow(
+    'run-dub',
+    { ep_folder: epFolder, track_modes: ['standard', 'aave'] },
+    'WF3: Dub Pipeline',
+    setWf3Firing
+  );
+
+  const dialogueSegs = job.segments.filter(isDialogue);
+  const stageDone = {
+    project: !!(job.projectId && job.episodeId),
+    source: !!job.media,
+    isolate: !!job.isolated,
+    speakers: !!job.speakersDetected && job.detectedSpeakers.length > 0 && job.detectedSpeakers.every(d => job.assignments[d.id]),
+    script: !!job.directed,
+    voices: !!job.voicesDone,
+    mixer: !!job.directed,
+    export: !!job.exported,
+  };
+
+  const subtabs = [
+    { id: 'project',  label: 'Project',        step: 1, key: 'project' },
+    { id: 'source',   label: 'Source Media',   step: 2, key: 'source' },
+    { id: 'isolate',  label: 'Vocal Isolation',step: 3, key: 'isolate' },
+    { id: 'speakers', label: 'Speakers',       step: 4, key: 'speakers' },
+    { id: 'script',   label: 'Script',         step: 5, key: 'script' },
+    { id: 'voices',   label: 'Voices',         step: 6, key: 'voices' },
+    { id: 'mixer',    label: 'Mixer',          step: 7, key: 'mixer' },
+    { id: 'export',   label: 'Export',         step: 8, key: 'export' },
+  ];
+
+  return (
+    <>
+      <div className="page-head">
+        <div>
+          <div className="eyebrow">Workspace</div>
+          <h2 className="page-title">Dub Studio</h2>
+          <div className="page-sub">A resumable conveyor belt. Each stage locks its result to a checkpoint ” regenerate any single step without re-running the others. Low-RAM by design: nothing runs until you press its button.</div>
+        </div>
+        <div className="head-actions">
+          {job.episodeLabel && <span className="pill gold">{job.projectTitle.split(' ').slice(0,3).join(' ')}… · {job.episodeLabel}</span>}
+          <span className="pill crimson">IndexTTS-2</span>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginLeft: 8 }}>
+            <button
+              className="btn btn-small"
+              style={{ fontSize: 11, padding: '4px 10px', borderColor: 'var(--gold)', color: 'var(--gold)' }}
+              disabled={!job.projectId || wf1Firing}
+              onClick={launchWF1}
+              title="WF1: Build / refresh the character voice bank for this show (run once per show, not per episode)"
+            >
+              {wf1Firing ? '…' : '▶ WF1: Voice Bank'}
+            </button>
+            <button
+              className="btn btn-small"
+              style={{ fontSize: 11, padding: '4px 10px', borderColor: 'var(--gold)', color: 'var(--gold)' }}
+              disabled={!(job.projectId && job.episodeId && job.media) || wf2Firing}
+              onClick={launchWF2}
+              title="WF2: Transcribe → diarize → cast review → clone speakers (first half of episode pipeline)"
+            >
+              {wf2Firing ? '…' : '▶ WF2: Script Director'}
+            </button>
+            <button
+              className="btn btn-primary btn-small"
+              style={{ fontSize: 11, padding: '4px 10px' }}
+              disabled={!(job.projectId && job.episodeId) || wf3Firing}
+              onClick={launchWF3}
+              title="WF3: Translate → synthesize dialogue → time-stretch → render MP4s (second half of episode pipeline)"
+            >
+              {wf3Firing ? '…' : '▶ WF3: Dub Pipeline'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="subtabs">
+        {subtabs.map(t => (
+          <button key={t.id} className={'subtab' + (sub === t.id ? ' on' : '') + (stageDone[t.key] ? ' done' : '')} onClick={() => setSub(t.id)}>
+            <span className="step">{stageDone[t.key] ? <Ico.check width="11" height="11"/> : t.step}</span>{t.label}
+          </button>
+        ))}
+      </div>
+
+      {sub === 'project'  && <SubProject  job={job} setJob={setJob} upd={upd} projects={projects} setProjects={setProjects} pushToast={pushToast} go={setSub} />}
+      {sub === 'source'   && <SubSource   job={job} upd={upd} pushToast={pushToast} go={setSub} />}
+      {sub === 'isolate'  && <SubIsolate  job={job} upd={upd} pushToast={pushToast} go={setSub} />}
+      {sub === 'speakers' && <SubSpeakers job={job} upd={upd} characters={characters} go={setSub} pushToast={pushToast} refreshCharacters={refreshCharacters} />}
+      {sub === 'script'   && <SubScript   job={job} upd={upd} characters={characters} setCharacters={setCharacters} pushToast={pushToast} go={setSub} config={config} />}
+      {sub === 'voices'   && <SubVoices   job={job} upd={upd} characters={characters} pushToast={pushToast} go={setSub} />}
+      {sub === 'mixer'    && <SubMixer    job={job} upd={upd} go={setSub} />}
+      {sub === 'export'   && <SubExport   job={job} upd={upd} setProjects={setProjects} pushToast={pushToast} stageDone={stageDone} />}
+    </>
+  );
+}
+
+function Stat({ label, value, cls }) {
+  return (
+    <div className="stat">
+      <div className="stat-label">{label}</div>
+      <div className={'stat-value ' + (cls || '')}>{value}</div>
+    </div>
+  );
+}
+
+/* ---------- LockBar Helper Component ---------- */
+// Define early so any stage can safely render <LockBar />.
+function LockBar({ locked, lockedText, idleText, actionLabel, onAction, onContinue, continueLabel, regen, onRegen }) {
+  return (
+    <div className="lock-bar">
+      <div className="lock-note">
+        <span className={'dot' + (locked ? ' ok' : '')}></span>
+        <span>{locked ? (lockedText || 'Stage locked') : (idleText || 'Pending action')}</span>
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        {actionLabel && onAction && (
+          <button className="btn btn-primary btn-small" onClick={onAction} disabled={locked}>
+            {actionLabel}
+          </button>
+        )}
+        {regen && locked && onRegen && (
+          <button className="btn btn-small" onClick={onRegen}>
+            Regenerate
+          </button>
+        )}
+        {onContinue && (
+          <button className="btn btn-gold btn-small" onClick={onContinue}>
+            {continueLabel || 'Continue →'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* Bottom-of-stage navigation: Back / status / Regenerate / Next */
+function StageNav({ go, prev, next, nextLabel, status, locked, regen, onRegen, extra }) {
+  return (
+    <div className="lock-bar">
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        {prev ? <button className="btn btn-small btn-ghost" onClick={() => go(prev)}>← Back</button> : <span></span>}
+        {status && <span className={'lock-note' + (locked ? ' locked' : '')}><span className="dot"></span>{status}</span>}
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        {extra}
+        {regen && <button className="btn btn-small" onClick={onRegen}><Ico.regen width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>Regenerate</button>}
+        {next && <button className="btn btn-gold btn-small" onClick={() => go(next)}>{nextLabel || 'Next →'}</button>}
+      </div>
+    </div>
+  );
+}
+
+// ==========================
+// Backend bridge (serve_ui.py)
+// ==========================
+function apiPost(path, body) {
+  return fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body || {}),
+  }).then(r => {
+    if (!r.ok) return r.json().then(j => { throw new Error(j.error || ('HTTP ' + r.status)); });
+    return r.json();
+  });
+}
+
+function apiGet(path) {
+  return fetch(path).then(r => {
+    if (!r.ok) return r.json().then(j => { throw new Error(j.error || ('HTTP ' + r.status)); });
+    return r.json();
+  });
+}
+
+
+function startLogPolling() {
+  const logBox = document.getElementById('log-console-box');
+  if (!logBox) return;
+
+  // Ensure only one poller runs
+  if (window.__yanflix_log_timer) {
+    clearInterval(window.__yanflix_log_timer);
+  }
+
+  window.__yanflix_log_timer = setInterval(() => {
+    apiGet('/api/status')
+      .then(status => {
+        // Expected fields from serve_ui.py (currently simple), but we tolerate variations.
+        const line = status?.latest_output
+          ? `Status: ${status.latest_output} (output updated)`
+          : (status?.current_log || status?.message || null);
+
+        if (line) {
+          const div = document.createElement('div');
+          div.innerHTML = `<span style="color: var(--ink-3)">[${new Date().toLocaleTimeString()}]</span> ${String(line)}`;
+          logBox.appendChild(div);
+          logBox.scrollTop = logBox.scrollHeight;
+        }
+      })
+      .catch(() => {
+        // ignore polling errors to avoid killing UI
+      });
+  }, 1000);
+}
+
+
+/* ---------- Stage 1: Project ---------- */
+function SubProject({ job, setJob, upd, projects, setProjects, pushToast, go }) {
+  const [creating, setCreating] = useState(false);
+  const [title, setTitle] = useState('');
+  const [format, setFormat] = useState('Series');
+  const [genre, setGenre] = useState('');
+  const [year, setYear] = useState('');
+  const [epCount, setEpCount] = useState(1);
+  const csvRef = useRef(null);
+
+  const activeProject = projects.find(p => p.id === job.projectId);
+
+  const selectEpisode = (proj, ep) => {
+    if (ep.status === 'complete') {
+      pushToast({ kind: 'info', title: 'Already dubbed', msg: `${ep.label} is complete ” open it in the Library.` });
+      return;
+    }
+    if (ep.id === job.episodeId) return;
+    setJob(freshJob(proj, ep));
+    pushToast({ kind: 'success', title: 'Episode selected', msg: `${proj.title} · ${ep.label}` });
+  };
+
+  const createProject = () => {
+    if (!title.trim()) { pushToast({ kind: 'error', title: 'Title required' }); return; }
+    const slug = slugify(title);
+    const episodes = format === 'Movie'
+      ? [{ id: 'm_' + Date.now(), label: 'MOVIE', name: title.trim(), status: 'empty' }]
+      : Array.from({ length: Math.max(1, epCount) }).map((_, i) => ({
+          id: `ep_${Date.now()}_${i}`, label: `S01E${String(i + 1).padStart(2, '0')}`, name: `Episode ${i + 1}`, status: 'empty',
+        }));
+    const proj = { id: 'p_' + Date.now(), title: title.trim(), format, genres: genre ? genre.split(',').map(g => g.trim()).filter(Boolean) : [], year, slug, thumb: null, episodes };
+    setProjects(p => [proj, ...p]);
+    setJob(freshJob(proj, episodes[0]));
+    pushToast({ kind: 'success', title: 'Project created', msg: `${title} · ${episodes.length} episode${episodes.length>1?'s':''} pre-created` });
+    setCreating(false); setTitle(''); setGenre(''); setYear(''); setEpCount(1);
+  };
+
+  const importCsv = (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const rows = ev.target.result.split(/\r?\n/).filter(r => r.trim());
+        const header = rows[0].split(',').map(h => h.trim().toLowerCase());
+        const body = rows.slice(1).map(r => {
+          // naive CSV split honoring quotes
+          const cells = r.match(/("([^"]|"")*"|[^,]*)(,|$)/g).slice(0, header.length).map(c => c.replace(/,$/,'').replace(/^"|"$/g,'').trim());
+          return Object.fromEntries(header.map((h, i) => [h, cells[i] || '']));
+        });
+        if (!body.length) throw new Error('no rows');
+        const title = body[0].title || file.name.replace(/\.csv$/,'');
+        const slug = slugify(title);
+        const episodes = body.map((r, i) => ({
+          id: `csv_${Date.now()}_${i}`, label: `S01E${String(i + 1).padStart(2, '0')}`,
+          name: r.episode_name || `Episode ${i + 1}`, status: 'empty',
+        }));
+        const genres = (body[0].genres || '').split(/[;,]/).map(g => g.trim()).filter(Boolean);
+        const proj = { id: 'p_' + Date.now(), title, format: body[0].format || 'Series', genres, year: body[0].release_year || '', slug, thumb: null, episodes };
+        setProjects(p => [proj, ...p]);
+        pushToast({ kind: 'success', title: 'CSV imported', msg: `${title} · ${episodes.length} episodes, cast roster saved to characters/shows/${slug}/` });
+      } catch {
+        pushToast({ kind: 'error', title: 'CSV import failed', msg: 'Expected columns: title, format, genres, release_year, episode_name, cast' });
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  return (
+    <>
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="stage-head">
+          <div className="panel-title">Projects &amp; Episodes</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input ref={csvRef} type="file" accept=".csv" hidden onChange={importCsv} />
+            <button className="btn btn-small" onClick={() => csvRef.current?.click()}><Ico.doc width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>Import Show CSV</button>
+            <button className="btn btn-primary btn-small" onClick={() => setCreating(c => !c)}><Ico.plus width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>New Project</button>
+          </div>
+        </div>
+        <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>Pre-create episodes before you dub. Pick an episode to load it into the pipeline ” its checkpoints live in <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono, monospace'}}>jobs/{job.slug || 'show'}_&lt;ep&gt;/</code>.</div>
+
+        {creating && (
+          <div style={{ background: 'var(--bg-1)', border: '1px solid var(--line-2)', borderRadius: 6, padding: 18, marginBottom: 18 }}>
+            <div style={{ display: 'flex', gap: 14, marginBottom: 14 }}>
+              <div style={{ flex: 2 }}><div className="label">Title</div><input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Smoking Behind the Supermarket With You" /></div>
+              <div style={{ flex: 1 }}><div className="label">Format</div><select className="select" value={format} onChange={(e) => setFormat(e.target.value)}><option>Series</option><option>Movie</option></select></div>
+            </div>
+            <div style={{ display: 'flex', gap: 14, marginBottom: 16 }}>
+              <div style={{ flex: 2 }}><div className="label">Genres (comma separated)</div><input className="input" value={genre} onChange={(e) => setGenre(e.target.value)} placeholder="Slice of Life, Romance" /></div>
+              <div style={{ flex: 1 }}><div className="label">Year</div><input className="input" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2023" /></div>
+              {format === 'Series' && <div style={{ flex: 1 }}><div className="label"># Episodes</div><input className="input" type="number" min="1" max="50" value={epCount} onChange={(e) => setEpCount(+e.target.value)} /></div>}
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="btn btn-primary btn-small" onClick={createProject}>Create &amp; Pre-Create Episodes</button>
+              <button className="btn btn-ghost btn-small" onClick={() => setCreating(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        <div className="proj-grid">
+          {projects.map(p => (
+            <button key={p.id} className={'proj-card' + (p.id === job.projectId ? ' active' : '')} onClick={() => selectEpisode(p, p.episodes.find(e => e.status !== 'complete') || p.episodes[0])}>
+              <div className="proj-poster" style={p.thumb ? { backgroundImage: `url(${p.thumb})` } : null}>
+                {!p.thumb && <span className="glyph-letter">{p.title[0]}</span>}
+              </div>
+              <div className="proj-body">
+                <div className="proj-name">{p.title}</div>
+                <div className="proj-meta">{p.format} · {p.episodes.length} ep · {p.episodes.filter(e => e.status==='complete').length} dubbed</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeProject && (
+        <div className="panel">
+          <div className="stage-head">
+            <div className="panel-title">{activeProject.title} ” Episodes</div>
+            <span className="pill">{activeProject.year || '”'} · {activeProject.genres.join(', ') || 'No genres'}</span>
+          </div>
+          <div className="ep-strip">
+            {activeProject.episodes.map(ep => (
+              <div key={ep.id} className={'ep-row' + (ep.id === job.episodeId ? ' active' : '')}>
+                <span className="ep-tag">{ep.label}</span>
+                <div><div className="ep-title">{ep.name}</div></div>
+                <span className={'badge ' + (ep.status === 'complete' ? 'done' : ep.id === job.episodeId ? 'running' : 'pending')}>
+                  {ep.status === 'complete' ? 'Dubbed' : ep.id === job.episodeId ? 'In Studio' : 'Not started'}
+                </span>
+                <button className="btn btn-small" onClick={() => selectEpisode(activeProject, ep)} disabled={ep.status === 'complete'}>
+                  {ep.id === job.episodeId ? 'Loaded' : ep.status === 'complete' ? 'Done' : 'Load'}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <StageNav go={go} next="source" nextLabel="Next: Source Media →"
+        status={job.episodeId ? `Episode loaded · ${job.episodeLabel}` : 'Pick or create an episode to begin'}
+        locked={!!job.episodeId} />
+    </>
+  );
+}
+
+/* ---------- Stage 2: Source Media ---------- */
+function SubSource({ job, upd, pushToast, go }) {
+  const [over, setOver] = useState(false);
+  const inputRef = useRef(null);
+
+  const loadAudio = async (files) => {
+    const f = files?.[0]; if (!f) return;
+    const url = URL.createObjectURL(f);
+    const ext = f.name.match(/\.[^.]+$/)?.[0] || '.m4a';
+    const stem = slugify(f.name.replace(/\.[^.]+$/, ''));
+    upd({
+      sourceMethod: 'upload',
+      media: { name: f.name, duration: '”', size: (f.size/1_000_000).toFixed(1) + ' MB', tracks: 1 },
+      mediaUrl: url, mediaExt: ext, episodeFolder: stem,
+    });
+    pushToast({ kind: 'info', title: 'Uploading…', msg: `Saving ${f.name} to workspace/1_inputs/` });
+    try {
+      const form = new FormData();
+      form.append('file', f);
+      const res = await fetch('/api/upload-source', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.status);
+      pushToast({ kind: 'success', title: 'File saved', msg: `workspace/1_inputs/${f.name}` });
+    } catch (e) {
+      pushToast({ kind: 'error', title: 'Upload failed', msg: String(e?.message || e) });
+    }
+  };
+
+  const fetchUrl = () => {
+    const url = (job.youtubeUrl || '').trim();
+    if (!url) { pushToast({ kind: 'error', title: 'Paste a link first' }); return; }
+    upd({ sourceMethod: 'url' });
+    pushToast({ kind: 'info', title: 'yt-dlp queued', msg: 'Downloading to workspace/0_raw_videos/…' });
+    fetch('/api/ytdlp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, slug: job.slug || 'video' }),
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.error) { pushToast({ kind: 'error', title: 'yt-dlp failed', msg: res.error }); return; }
+        upd({ media: { name: res.filename, duration: res.duration || '?', size: res.size || '?', tracks: 2 } });
+        pushToast({ kind: 'success', title: 'Raw video saved', msg: 'Detach audio in Clipchamp, then drop the clean track below.' });
+      })
+      .catch(e => pushToast({ kind: 'error', title: 'yt-dlp error', msg: String(e) }));
+  };
+
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+
+  return (
+    <>
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="stage-head">
+          <div className="panel-title">Source Media</div>
+          {job.media && <span className="badge done">Loaded</span>}
+        </div>
+
+        <div className="media-opts">
+          <div className="media-opt">
+            <div className="tag-letter">A</div>
+            <h4>Pull Raw Video (yt-dlp)</h4>
+            <div className="desc">Download the full episode to <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace',fontSize:10}}>workspace/0_raw_videos/</code> so you can detach audio in Clipchamp.</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input className="input" value={job.youtubeUrl} onChange={(e) => upd({ youtubeUrl: e.target.value })} placeholder="YouTube / Tubi / streaming link" />
+              <button className="btn btn-primary btn-small" style={{ whiteSpace: 'nowrap' }} onClick={fetchUrl}><Ico.link width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>Fetch</button>
+            </div>
+          </div>
+
+          <div className="media-opt">
+            <div className="tag-letter">B</div>
+            <h4>Upload Source File</h4>
+            <div className="desc">Drop your raw video or detached audio straight in. Accepts video (.mp4, .mkv) or audio (.wav, .mp3, .m4a).</div>
+            <div className={'dropzone' + (over ? ' over' : '')} style={{ padding: '24px' }}
+              onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+              onDragLeave={() => setOver(false)}
+              onDrop={(e) => { e.preventDefault(); setOver(false); loadAudio(e.dataTransfer.files); }}
+              onClick={() => inputRef.current?.click()}>
+              <input ref={inputRef} type="file" accept="audio/*,video/*" hidden onChange={(e) => loadAudio(e.target.files)} />
+              <div className="glyph"><Ico.upload width="18" height="18"/></div>
+              <div className="heading" style={{ fontSize: 15 }}>Drop video or audio</div>
+              <div className="sub">.mp4 · .mkv · .wav · .mp3 · .m4a</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="clip-note">
+          <Ico.scissors width="16" height="16" style={{ color: 'var(--gold)', flexShrink: 0, marginTop: 1 }}/>
+          <div><b>Clipchamp hand-off:</b> Option A gives you the raw video. Detach the audio externally in Clipchamp, then return and use Option B to bring the clean track back into the workspace. Keeping detach manual avoids loading the full video into RAM.</div>
+        </div>
+      </div>
+
+      {job.media && (
+        <div className="panel">
+          <div className="panel-title">Loaded Track</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 8 }}>
+            <Stat label="Filename" value={<span style={{ fontSize: 13, fontFamily: 'JetBrains Mono, monospace' }}>{job.media.name}</span>} />
+            <Stat label="Duration" value={job.media.duration} />
+            <Stat label="Size" value={job.media.size} />
+            <Stat label="Audio Tracks" value={job.media.tracks} />
+          </div>
+        </div>
+      )}
+
+      <StageNav go={go} prev="project" next="isolate" nextLabel="Next: Vocal Isolation →"
+        status={job.media ? `Source locked · workspace/1_inputs/${job.media.name}` : 'Load a track to continue'}
+        locked={!!job.media}
+        regen={!!job.media} onRegen={() => { upd({ media: null }); pushToast({ kind: 'info', title: 'Source cleared' }); }} />
+    </>
+  );
+}
+
+function NeedEpisode({ go }) {
+  return (
+    <div className="empty" style={{ padding: '48px 0' }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>🎬</div>
+      <div style={{ fontSize: 15, color: 'var(--ink-2)', marginBottom: 6 }}>No episode loaded.</div>
+      <div style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 16 }}>Pick or create one in the Project stage first.</div>
+      <button className="btn btn-primary btn-small" onClick={() => go('project')}>← Go to Project</button>
+    </div>
+  );
+}
+
+/* ---------- Stage 3: Vocal Isolation (Demucs) ---------- */
+function SubIsolate({ job, upd, pushToast, go }) {
+  const [prog, setProg] = useState(0);
+  const [previewStem, setPreviewStem] = useState(null); // 'vocals' | 'bg' | null
+  const audioRef = useRef(null);
+
+  const togglePreview = (stem) => {
+    if (previewStem === stem) {
+      audioRef.current?.pause();
+      setPreviewStem(null);
+    } else {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      const url = stem === 'vocals' ? job.vocalsUrl : job.bgUrl;
+      if (url) {
+        const a = new Audio(url);
+        a.loop = true;
+        a.play().catch(() => {});
+        audioRef.current = a;
+      }
+      setPreviewStem(stem);
+    }
+  };
+
+  useEffect(() => () => { audioRef.current?.pause(); }, []);
+
+  const epFolder  = job.episodeFolder || slugify(job.episodeName);
+
+  // On mount: if stems already exist on disk (prior run), restore URLs without re-running
+  useEffect(() => {
+    if (!epFolder || job.isolated || job.isolating) return;
+    apiGet(`/api/isolate_status?ep_folder=${encodeURIComponent(epFolder)}`)
+      .then(res => {
+        if (res.status === 'done') {
+          upd({ isolated: true, vocalsUrl: '/' + res.vocals, bgUrl: '/' + res.background });
+          setProg(100);
+        }
+      })
+      .catch(() => {});
+  }, [epFolder]); // eslint-disable-line
+  const vocalsPath = `workspace/2_isolated/${epFolder}/htdemucs/${epFolder}/vocals.wav`;
+  const bgPath     = `workspace/2_isolated/${epFolder}/htdemucs/${epFolder}/no_vocals.wav`;
+
+  const separate = () => {
+    if (!job.media) { pushToast({ kind: 'error', title: 'Load source media first' }); return; }
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    setPreviewStem(null);
+    upd({ isolating: true, isolated: false, vocalsUrl: null, bgUrl: null });
+    setProg(0);
+    const regen = job.isolated;
+    pushToast({ kind: 'info', title: regen ? 'Regenerating ” Demucs overwriting stems' : 'Demucs started', msg: 'htdemucs --two-stems=vocals' });
+
+    apiPost('/api/isolate', {
+      audio:     `workspace/1_inputs/${job.media.name}`,
+      ep_folder: epFolder,
+    }).catch(e => {
+      upd({ isolating: false });
+      pushToast({ kind: 'error', title: 'Backend error', msg: String(e?.message || e) });
+    });
+  };
+
+  useEffect(() => {
+    if (!job.isolating) return;
+    // Animate progress bar while polling real backend status
+    const progTimer = setInterval(() => {
+      setProg(p => Math.min(p + 1.5 + Math.random() * 2, 92)); // stall at 92 until done
+    }, 400);
+    const pollTimer = setInterval(() => {
+      apiGet(`/api/isolate_status?ep_folder=${encodeURIComponent(epFolder)}`)
+        .then(res => {
+          if (res.status === 'done') {
+            clearInterval(progTimer);
+            clearInterval(pollTimer);
+            setProg(100);
+            upd({ isolating: false, isolated: true, vocalsUrl: '/' + res.vocals, bgUrl: '/' + res.background });
+            pushToast({ kind: 'success', title: 'Stems separated', msg: `${epFolder}/vocals/  +  ${epFolder}/background/` });
+          } else if (res.status === 'error') {
+            clearInterval(progTimer);
+            clearInterval(pollTimer);
+            upd({ isolating: false });
+            pushToast({ kind: 'error', title: 'Demucs failed', msg: res.error || 'Check terminal for details' });
+          }
+        })
+        .catch(() => {}); // backend not ready yet, keep polling
+    }, 2000);
+    return () => { clearInterval(progTimer); clearInterval(pollTimer); };
+  }, [job.isolating]); // eslint-disable-line
+
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+  if (!job.media) return (
+    <div className="empty" style={{ padding: '48px 0' }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>🎚️</div>
+      <div style={{ fontSize: 15, color: 'var(--ink-2)', marginBottom: 6 }}>No source audio yet.</div>
+      <div style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 16 }}>Load a track in the Source Media stage.</div>
+      <button className="btn btn-primary btn-small" onClick={() => go('source')}>← Go to Source Media</button>
+    </div>
+  );
+
+  return (
+    <div className="panel">
+      <div className="stage-head">
+        <div className="panel-title">Stage 1 · Vocal Isolation</div>
+        {job.isolated ? <span className="badge done">Separated</span> : job.isolating ? <span className="badge running">Running</span> : <span className="badge pending">Pending</span>}
+      </div>
+      <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>Run Demucs to split the dialogue from music &amp; SFX. The background stem (<code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>no_vocals.wav</code>) is reused at the Mixer stage so your dub sits over the original score.</div>
+
+      <div className="stem-row" style={{ borderColor: 'var(--line-2)' }}>
+        <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--bg-2)', border: '1px solid var(--line-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
+          <Ico.mic width="14" height="14"/>
+        </div>
+        <div>
+          <div className="stem-name">Original Audio</div>
+          <div className="stem-path">workspace/1_inputs/{job.media.name}</div>
+        </div>
+        <span className="pill">{job.media.duration}</span>
+      </div>
+
+      {job.isolating && (
+        <div style={{ margin: '16px 0' }}>
+          <div className="stage-bar" style={{ height: 5 }}><div className="stage-bar-fill" style={{ width: prog + '%' }}></div></div>
+          <div className="help" style={{ marginTop: 8 }}>Separating tracks… {Math.round(prog)}%</div>
+        </div>
+      )}
+
+      {job.isolated && (
+        <div style={{ marginTop: 14 }}>
+          {[
+            { stem: 'vocals', label: 'vocals.wav',     path: vocalsPath, seed: 3, title: 'Preview isolated dialogue' },
+            { stem: 'bg',     label: 'no_vocals.wav', path: bgPath,     seed: 7, title: 'Preview music + SFX' },
+          ].map(({ stem, label, path, seed, title }) => (
+            <div key={stem} className="stem-row">
+              <div className="stem-check"><Ico.check width="15" height="15"/></div>
+              <div style={{ flex: 1 }}>
+                <div className="stem-name">{label}</div>
+                <div className="stem-path">{path}</div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <button onClick={() => togglePreview(stem)} title={previewStem === stem ? 'Stop' : title} style={{ background: previewStem === stem ? 'var(--crimson)' : 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 4, width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: previewStem === stem ? '#fff' : 'var(--ink-2)', flexShrink: 0 }}>
+                  {previewStem === stem
+                    ? <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="1" width="4" height="10"/><rect x="7" y="1" width="4" height="10"/></svg>
+                    : <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"/></svg>}
+                </button>
+                <AnimWaveform active={previewStem === stem} seed={seed} barCount={38} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <LockBar
+        locked={job.isolated}
+        lockedText={`Stems locked · workspace/2_isolated/${epFolder}/`}
+        idleText="Demucs has not run yet"
+        actionLabel={job.isolating ? 'Separating…' : job.isolated ? 'Regenerate (overwrite)' : 'Separate Vocals'}
+        onAction={separate}
+        onContinue={() => go('speakers')} continueLabel="Continue to Speakers →"
+        regen onRegen={separate}
+      />
+    </div>
+  );
+}
+
+/* ---------- Stage 4: Speakers ---------- */
+function SubSpeakers({ job, upd, characters, go, pushToast, refreshCharacters }) {
+  const [playingSample, setPlayingSample] = useState(null);
+  const sampleAudioRef = useRef(null);
+
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+  if (!job.isolated)  return (
+    <div className="empty" style={{ padding: '48px 0' }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>🎙️</div>
+      <div style={{ fontSize: 15, color: 'var(--ink-2)', marginBottom: 6 }}>Vocals not isolated yet.</div>
+      <div style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 16 }}>Run Demucs in Vocal Isolation first.</div>
+      <button className="btn btn-primary btn-small" onClick={() => go('isolate')}>← Go to Vocal Isolation</button>
+    </div>
+  );
+
+  const epFolder   = job.episodeFolder || slugify(job.episodeName);
+  const vocalsPath = `workspace/2_isolated/${epFolder}/htdemucs/${epFolder}/vocals.wav`;
+  const setAssign  = (id, charId) => { upd({ assignments: { ...job.assignments, [id]: charId } }); setCastSaved(false); };
+
+  // Pre-fill from previously detected count so re-runs are accurate by default
+  const [numSpk, setNumSpk] = useState(job.numSpeakers || 0);
+  const [minSpk, setMinSpk] = useState(0);
+  const [maxSpk, setMaxSpk] = useState(0);
+  const [mergeThresh, setMergeThresh] = useState(0.82);
+
+  const runDiarize = () => {
+    upd({ diarizing: true, speakersDetected: false, detectedSpeakers: [], speakerSamples: {}, assignments: {}, numSpeakers: 0 }); setCastSaved(false);
+    pushToast({ kind: 'info', title: 'pyannote started', msg: `Analysing ${epFolder}/vocals.wav…` });
+    apiPost('/api/diarize', { vocals: vocalsPath, ep_folder: epFolder, num_speakers: numSpk, min_speakers: minSpk, max_speakers: maxSpk, merge_threshold: mergeThresh })
+      .catch(e => { upd({ diarizing: false }); pushToast({ kind: 'error', title: 'Backend error', msg: String(e?.message || e) }); });
+  };
+
+  // Poll while diarizing
+  useEffect(() => {
+    if (!job.diarizing) return;
+    const t = setInterval(() => {
+      apiGet(`/api/diarize_status?ep_folder=${encodeURIComponent(epFolder)}`)
+        .then(res => {
+          if (res.status === 'done') {
+            clearInterval(t);
+            const assignments = {};
+            res.speakers.forEach((id, i) => { assignments[id] = characters[i % characters.length]?.id || ''; });
+            upd({ diarizing: false, speakersDetected: true, detectedSpeakers: res.speakers, speakerSamples: res.samples, numSpeakers: res.speakers.length, assignments });
+            pushToast({ kind: 'success', title: `${res.speakers.length} speaker(s) detected`, msg: res.speakers.join('  ·  ') });
+          } else if (res.status === 'error') {
+            clearInterval(t);
+            upd({ diarizing: false });
+            pushToast({ kind: 'error', title: 'Diarization failed', msg: res.error || 'Check terminal' });
+          }
+        }).catch(() => {});
+    }, 2500);
+    return () => clearInterval(t);
+  }, [job.diarizing]); // eslint-disable-line
+
+  // On mount: restore speakers + saved cast mapping
+  useEffect(() => {
+    if (!epFolder || job.speakersDetected || job.diarizing) return;
+    // Load diarize result and saved cast mapping in parallel, prefer saved names
+    Promise.all([
+      apiGet(`/api/diarize_status?ep_folder=${encodeURIComponent(epFolder)}`).catch(() => null),
+      apiGet(`/api/cast_mapping?ep_folder=${encodeURIComponent(epFolder)}`).catch(() => null),
+    ]).then(([diar, cast]) => {
+      if (!diar || diar.status !== 'done') return;
+      const savedAssignments = cast?.assignments || {};
+      const assignments = {};
+      diar.speakers.forEach((id, i) => {
+        assignments[id] = savedAssignments[id] || job.assignments[id] || characters[i % characters.length]?.id || '';
+      });
+      upd({
+        speakersDetected: true,
+        detectedSpeakers: diar.speakers,
+        speakerSamples: diar.samples,
+        numSpeakers: diar.speakers.length,
+        assignments,
+        ...(cast?.source_lang ? { sourceLang: cast.source_lang } : {}),
+      });
+    }).catch(() => {});
+  }, [epFolder]); // eslint-disable-line
+
+  const toggleSample = (spkId) => {
+    if (playingSample === spkId) {
+      sampleAudioRef.current?.pause(); setPlayingSample(null); return;
+    }
+    sampleAudioRef.current?.pause();
+    const info = job.speakerSamples[spkId];
+    if (info?.sample) {
+      const a = new Audio('/' + info.sample);
+      a.play().catch(() => {});
+      sampleAudioRef.current = a;
+      a.onended = () => setPlayingSample(null);
+    }
+    setPlayingSample(spkId);
+  };
+
+  useEffect(() => () => sampleAudioRef.current?.pause(), []);
+
+  const [castSaved, setCastSaved] = useState(false);
+  // Mark saved if cast_mapping.json already existed when we restored
+  useEffect(() => {
+    if (!epFolder) return;
+    apiGet(`/api/cast_mapping?ep_folder=${encodeURIComponent(epFolder)}`).then(res => {
+      if (res?.assignments) setCastSaved(true);
+    }).catch(() => {});
+  }, [epFolder]); // eslint-disable-line
+  const [sourceLang, setSourceLang] = useState(job.sourceLang || 'Japanese');
+  const [speakerNames, setSpeakerNames] = useState({});   // spkId -> custom name
+  const [vaultSaved, setVaultSaved] = useState({});       // spkId -> 'saving'|'done'|'error'
+  const unmerged    = job.detectedSpeakers.filter(id => !job.speakerMerges?.[id]);
+  // Song speakers don't need a character assigned ” exclude them from the requirement
+  const needsAssign = unmerged.filter(id => !job.songSpeakers?.[id]);
+  const allAssigned = needsAssign.length > 0 && needsAssign.every(id => job.assignments[id]);
+  const allMapped   = allAssigned && castSaved;
+
+  const saveToVault = (spkId) => {
+    const name = (speakerNames[spkId] || '').trim();
+    if (!name) return;
+    setVaultSaved(v => ({ ...v, [spkId]: 'saving' }));
+    fetch('/api/save_speaker_to_vault', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ spk_id: spkId, name, show_slug: job.slug, ep_folder: epFolder }),
+    })
+      .then(r => r.json())
+      .then(r => {
+        if (r.ok) {
+          setVaultSaved(v => ({ ...v, [spkId]: 'done' }));
+          refreshCharacters();
+        } else {
+          setVaultSaved(v => ({ ...v, [spkId]: 'error' }));
+        }
+      })
+      .catch(() => setVaultSaved(v => ({ ...v, [spkId]: 'error' })));
+  };
+
+  return (
+    <>
+      {/* â”€â”€ Detection panel â”€â”€ */}
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="stage-head">
+          <div className="panel-title">Stage 1 · Speaker Detection</div>
+          {job.speakersDetected
+            ? <span className="badge done">{job.detectedSpeakers.length} Speakers Found</span>
+            : job.diarizing
+            ? <span className="badge running">Running…</span>
+            : <span className="badge pending">Pending</span>}
+        </div>
+        <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>
+          pyannote diarizes <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>{vocalsPath}</code> and extracts a voice sample per speaker so you can hear who's who before assigning characters.
+        </div>
+
+        {job.diarizing && (
+          <div style={{ marginBottom: 14 }}>
+            <div className="stage-bar" style={{ height: 4 }}><div className="stage-bar-fill" style={{ width: '100%', animation: 'indeterminate 1.4s ease-in-out infinite' }}></div></div>
+            <div className="help" style={{ marginTop: 6 }}>pyannote is analysing the vocal track ” this usually takes 1‘3 minutes…</div>
+          </div>
+        )}
+
+        {job.speakersDetected && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10, marginBottom: 14 }}>
+            {job.detectedSpeakers.map(spkId => {
+              const info    = job.speakerSamples[spkId] || {};
+              const playing = playingSample === spkId;
+              const mergedInto = job.speakerMerges?.[spkId];
+              const samplePath = info.sample ? `workspace/2_isolated/${epFolder}/speakers/${spkId}/sample.wav` : null;
+              const spkIsSong = !!job.songSpeakers?.[spkId];
+              const toggleSpkSong = () => {
+                const next = !spkIsSong;
+                const songSpeakers = { ...job.songSpeakers, [spkId]: next };
+                // Also update segments if already loaded
+                const segments = job.segments.length > 0
+                  ? job.segments.map(s => s.speaker === spkId ? { ...s, isSong: next } : s)
+                  : job.segments;
+                upd({ songSpeakers, segments });
+              };
+              return (
+                <div key={spkId} style={{ background: 'var(--bg-1)', border: `1px solid ${spkIsSong ? 'var(--gold)' : mergedInto ? 'rgba(234,179,8,0.4)' : playing ? 'var(--crimson)' : 'var(--line)'}`, borderRadius: 4, padding: 12, opacity: mergedInto ? 0.6 : 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <span className="spk-tag" style={{ background: mergedInto ? 'rgba(234,179,8,0.15)' : undefined }}>{spkId}</span>
+                    {info.segment_count && <span style={{ fontSize: 10, color: 'var(--ink-3)' }}>{info.segment_count} segs</span>}
+                    <button
+                      onClick={toggleSpkSong}
+                      title={spkIsSong ? 'All segments marked as song — click to unmark' : 'Mark all segments as song (skip TTS + translation)'}
+                      style={{ fontSize: 10, padding: '1px 7px', borderRadius: 3, border: `1px solid ${spkIsSong ? 'var(--gold)' : 'var(--line-2)'}`, background: spkIsSong ? 'rgba(234,179,8,0.18)' : 'transparent', color: spkIsSong ? 'var(--gold)' : 'var(--ink-3)', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                    >♪ {spkIsSong ? 'Song ✓' : 'Song'}</button>
+                    <button onClick={() => toggleSample(spkId)} title={playing ? 'Stop' : 'Play voice sample'} style={{ marginLeft: 'auto', background: playing ? 'var(--crimson)' : 'var(--bg-2)', border: '1px solid var(--line-2)', borderRadius: 4, width: 26, height: 26, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: playing ? '#fff' : 'var(--ink-2)' }}>
+                      {playing
+                        ? <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="1" width="4" height="10"/><rect x="7" y="1" width="4" height="10"/></svg>
+                        : <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,1 11,6 2,11"/></svg>}
+                    </button>
+                  </div>
+                  <AnimWaveform active={playing} seed={spkId.charCodeAt(8) || 3} barCount={28} />
+                  {/* Timestamp of the sample clip so user can find it in the video */}
+                  {(info.sample_start != null) && (() => {
+                    const fmt = s => { const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = Math.floor(s%60); return h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}` : `${m}:${String(sec).padStart(2,'0')}`; };
+                    return (
+                      <div style={{ marginTop: 5, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: 9, color: 'var(--ink-3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>sample clip</span>
+                        <span style={{ fontSize: 11, color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace', fontWeight: 600 }}>
+                          {fmt(info.sample_start)} → {fmt(info.sample_end)}
+                        </span>
+                      </div>
+                    );
+                  })()}
+                  {samplePath && (
+                    <div style={{ fontSize: 9.5, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono, monospace', marginTop: 4, wordBreak: 'break-all' }}>{samplePath}</div>
+                  )}
+                  {/* Name + Save to Vault */}
+                  <div style={{ marginTop: 8, display: 'flex', gap: 4 }}>
+                    <input
+                      className="input"
+                      placeholder="Name (e.g. Zutomayo)"
+                      value={speakerNames[spkId] || ''}
+                      onChange={e => setSpeakerNames(n => ({ ...n, [spkId]: e.target.value }))}
+                      style={{ flex: 1, fontSize: 11, padding: '3px 6px', height: 26 }}
+                    />
+                    <button
+                      onClick={() => saveToVault(spkId)}
+                      disabled={!speakerNames[spkId]?.trim() || vaultSaved[spkId] === 'saving'}
+                      style={{ fontSize: 11, padding: '0 8px', height: 26, borderRadius: 4, border: '1px solid var(--line-2)', cursor: 'pointer',
+                        background: vaultSaved[spkId] === 'done' ? 'rgba(34,197,94,0.15)' : vaultSaved[spkId] === 'error' ? 'rgba(239,68,68,0.15)' : 'var(--bg-2)',
+                        color: vaultSaved[spkId] === 'done' ? '#4ade80' : vaultSaved[spkId] === 'error' ? '#f87171' : 'var(--ink-2)',
+                        whiteSpace: 'nowrap' }}
+                      title="Save this speaker's sample to Character Vault"
+                    >
+                      {vaultSaved[spkId] === 'saving' ? '…' : vaultSaved[spkId] === 'done' ? '✓ Saved' : vaultSaved[spkId] === 'error' ? '✗ Error' : '+ Vault'}
+                    </button>
+                  </div>
+                  {/* Merge control */}
+                  <div style={{ marginTop: 6 }}>
+                    <select
+                      className="select"
+                      style={{ fontSize: 11, padding: '3px 6px', height: 26 }}
+                      value={mergedInto || ''}
+                      onChange={e => {
+                        const val = e.target.value;
+                        const merges = { ...(job.speakerMerges || {}) };
+                        if (val) merges[spkId] = val; else delete merges[spkId];
+                        upd({ speakerMerges: merges });
+                      }}
+                    >
+                      <option value="">— keep separate —</option>
+                      {job.detectedSpeakers.filter(s => s !== spkId).map(s => (
+                        <option key={s} value={s}>same as {s}</option>
+                      ))}
+                    </select>
+                    {mergedInto && <div style={{ fontSize: 10, color: 'var(--gold)', marginTop: 3 }}>merged → {mergedInto}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>Speakers (exact)</span>
+            <input type="number" min="0" max="20" value={numSpk || ''} placeholder="auto"
+              onChange={e => { setNumSpk(parseInt(e.target.value) || 0); setMinSpk(0); setMaxSpk(0); }}
+              style={{ width: 64, fontFamily: 'JetBrains Mono, monospace', fontSize: 12 }}
+              className="input" />
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>” or ”</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>Min</span>
+            <input type="number" min="0" max="20" value={minSpk || ''} placeholder="”"
+              onChange={e => { setMinSpk(parseInt(e.target.value) || 0); setNumSpk(0); }}
+              style={{ width: 52, fontFamily: 'JetBrains Mono, monospace', fontSize: 12 }}
+              className="input" />
+            <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>Max</span>
+            <input type="number" min="0" max="20" value={maxSpk || ''} placeholder="”"
+              onChange={e => { setMaxSpk(parseInt(e.target.value) || 0); setNumSpk(0); }}
+              style={{ width: 52, fontFamily: 'JetBrains Mono, monospace', fontSize: 12 }}
+              className="input" />
+          </div>
+          <div style={{ fontSize: 10, color: 'var(--ink-3)', fontStyle: 'italic' }}>
+            {numSpk > 0 ? `pyannote will find exactly ${numSpk} speaker${numSpk > 1 ? 's' : ''}` : minSpk || maxSpk ? `pyannote will find ${minSpk||'?'}‘${maxSpk||'?'} speakers` : 'leaving blank lets pyannote guess (often wrong)'}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+          <span style={{ fontSize: 11, color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>Auto-merge threshold</span>
+          <input type="range" min="0" max="1" step="0.01" value={mergeThresh}
+            onChange={e => setMergeThresh(parseFloat(e.target.value))}
+            style={{ flex: 1, maxWidth: 180, accentColor: 'var(--gold)' }} />
+          <span style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: 'var(--gold)', minWidth: 34 }}>
+            {mergeThresh === 0 ? 'off' : mergeThresh.toFixed(2)}
+          </span>
+          <span style={{ fontSize: 10, color: 'var(--ink-3)', fontStyle: 'italic' }}>
+            {mergeThresh === 0 ? 'no merging' : mergeThresh >= 0.9 ? 'very strict ” only near-identical voices merge' : mergeThresh >= 0.78 ? 'recommended ” collapses same-character emotional range' : 'aggressive ” may over-merge different characters'}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-primary btn-small" onClick={runDiarize} disabled={job.diarizing}>
+            {job.diarizing ? '⏳ Detecting…' : job.speakersDetected ? 'Re-run Detection' : 'â–¶ Detect Speakers'}
+          </button>
+        </div>
+      </div>
+
+      {/* â”€â”€ Assignment panel ” only shown once detection is done â”€â”€ */}
+      {job.speakersDetected && (
+        <div className="panel">
+          <div className="panel-title">Stage 2 · Assign Voices</div>
+          <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>
+            Map each detected speaker to a voice clone. The Actor resolves it via <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>shows/{job.slug}/&lt;char&gt;/</code> then <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>global_roster/&lt;char&gt;/</code>.
+          </div>
+          <div className="cast-grid">
+            {job.detectedSpeakers.map(id => {
+              const mergedInto = job.speakerMerges?.[id];
+              if (mergedInto) {
+                return (
+                  <div key={id} className="cast-row" style={{ opacity: 0.5 }}>
+                    <span className="spk-tag">{id}</span>
+                    <span style={{ fontSize: 11, color: 'var(--gold)', fontStyle: 'italic' }}>merged → {mergedInto}</span>
+                  </div>
+                );
+              }
+              const charId = job.assignments[id] || '';
+              const ch = characters.find(c => c.id === charId);
+              return (
+                <div key={id} className="cast-row">
+                  <span className="spk-tag">{id}</span>
+                  <select className="select" value={charId} onChange={(e) => setAssign(id, e.target.value)}>
+                    <option value="">” unassigned ”</option>
+                    <optgroup label="This Show">
+                      {characters.filter(c => c.domain === 'show' && c.showSlug === job.slug).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Global Roster">
+                      {characters.filter(c => c.domain === 'global').map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </optgroup>
+                  </select>
+                  {ch && <div className="mini-avatar">{ch.name[0]}</div>}
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 11, color: 'var(--ink-3)', whiteSpace: 'nowrap' }}>Source language</span>
+            <select className="select" value={sourceLang} onChange={e => { setSourceLang(e.target.value); upd({ sourceLang: e.target.value }); setCastSaved(false); }} style={{ fontSize: 11, height: 26, padding: '0 6px' }}>
+              {['Japanese','Spanish','Chinese (Mandarin)','Chinese (Cantonese)','Korean','French','Portuguese','Italian','German','Arabic','Hindi','Thai','Vietnamese','Indonesian','Russian','Turkish'].map(l => <option key={l}>{l}</option>)}
+            </select>
+            <span style={{ fontSize: 10, color: 'var(--ink-3)', fontStyle: 'italic' }}>Ollama will translate from this language → English</span>
+          </div>
+          <LockBar locked={allMapped} lockedText={`Cast mapping saved · ${sourceLang} → English`} idleText="Assign all unmerged speakers to continue"
+            actionLabel={!allMapped && allAssigned ? "Save Cast Mapping" : null}
+            onAction={allAssigned ? () => {
+              const charIndex = {};
+              characters.forEach(c => { charIndex[c.id] = { name: c.name, notes: c.notes || '' }; });
+              fetch('/api/save_cast', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ep_folder: epFolder,
+                  show_name: job.projectTitle || job.slug || '',
+                  source_lang: sourceLang,
+                  assignments: job.assignments,
+                  characters: charIndex,
+                }),
+              })
+                .then(r => r.json())
+                .then(r => { if (r.ok) { setCastSaved(true); upd({ sourceLang }); } })
+                .catch(() => setCastSaved(true));
+            } : null}
+          />
+        </div>
+      )}
+
+      {/* â”€â”€ Stage 3: Clone voices → Character Vault â”€â”€ */}
+      {/* â”€â”€ Next → Script â”€â”€ always visible once speakers are detected â”€â”€ */}
+      {job.speakersDetected && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+          <button className="btn btn-primary btn-small" onClick={() => go('script')}>
+            Continue to Script →
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ---------- Stage 4 · Step 3: Clone Speakers → Character Vault ---------- */
+function CloneSpeakersPanel({ job, upd, epFolder, pushToast, go, refreshCharacters }) {
+  const [cloning, setCloning]   = useState(false);
+  const [cloneRes, setCloneRes] = useState(null); // {done:[], total:N, results:{}}
+  const pollRef = useRef(null);
+
+  // Restore on mount if already cloned
+  useEffect(() => {
+    if (!epFolder) return;
+    apiGet(`/api/clone_status?ep_folder=${encodeURIComponent(epFolder)}`)
+      .then(res => { if (res.status === 'done') setCloneRes(res); })
+      .catch(() => {});
+  }, [epFolder]);
+
+  const startClone = () => {
+    // Only clone speakers that aren't merged away
+    const toClone = {};
+    job.detectedSpeakers.forEach(id => {
+      if (!job.speakerMerges?.[id]) {
+        toClone[id] = job.speakerSamples[id] || {};
+      }
+    });
+    setCloning(true);
+    setCloneRes(null);
+    pushToast({ kind: 'info', title: 'IndexTTS cloning started', msg: `${Object.keys(toClone).length} speakers · American English` });
+
+    apiPost('/api/clone_speakers', {
+      speakers:  toClone,
+      show_slug: job.slug,
+      ep_folder: epFolder,
+    }).catch(e => { setCloning(false); pushToast({ kind: 'error', title: 'Clone error', msg: String(e?.message || e) }); });
+
+    pollRef.current = setInterval(() => {
+      apiGet(`/api/clone_status?ep_folder=${encodeURIComponent(epFolder)}`)
+        .then(res => {
+          if (res.done) setCloneRes(res);
+          if (res.status === 'done') {
+            clearInterval(pollRef.current);
+            setCloning(false);
+            pushToast({ kind: 'success', title: `${res.done.length} voices cloned to Character Vault`, msg: 'Go back to Stage 2 to assign them, or continue to Script.' });
+            if (refreshCharacters) refreshCharacters();
+          }
+        }).catch(() => {});
+    }, 3000);
+  };
+
+  useEffect(() => () => clearInterval(pollRef.current), []);
+
+  const speakers = job.detectedSpeakers.filter(id => !job.speakerMerges?.[id]);
+  const done     = cloneRes?.done || [];
+  const allDone  = cloneRes?.status === 'done';
+
+  return (
+    <div className="panel" style={{ marginTop: 20 }}>
+      <div className="stage-head">
+        <div className="panel-title">Stage 3 · Clone Voices → Character Vault</div>
+        {allDone
+          ? <span className="badge done">{done.length} Cloned</span>
+          : cloning
+          ? <span className="badge running">Cloning…</span>
+          : <span className="badge pending">Pending</span>}
+      </div>
+      <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>
+        IndexTTS-2 clones each speaker's voice using their extracted sample as a reference. Output is American English ” the reference shapes timbre only, not accent. Clones are saved to <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>characters/shows/{job.slug}/</code> so they appear in Character Vault and in the Stage 2 assignment dropdown.
+      </div>
+
+      {/* Per-speaker clone progress */}
+      {(cloning || allDone) && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8, marginBottom: 16 }}>
+          {speakers.map(id => {
+            const isDone = done.includes(id);
+            const err    = cloneRes?.results?.[id]?.error;
+            return (
+              <div key={id} style={{ background: 'var(--bg-1)', border: `1px solid ${err ? 'var(--bad)' : isDone ? 'var(--good)' : 'var(--line)'}`, borderRadius: 4, padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 16 }}>{err ? '✗' : isDone ? '✓' : '⏳'}</span>
+                <div>
+                  <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: isDone ? 'var(--good)' : err ? 'var(--bad)' : 'var(--ink-2)' }}>{id}</div>
+                  {err && <div style={{ fontSize: 10, color: 'var(--bad)', marginTop: 2 }}>{err}</div>}
+                  {isDone && <div style={{ fontSize: 10, color: 'var(--ink-3)', marginTop: 2 }}>saved to vault</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <button className="btn btn-primary btn-small" onClick={startClone} disabled={cloning}>
+          {cloning ? `⏳ Cloning… ${done.length}/${speakers.length}` : allDone ? 'Re-clone Voices' : 'â–¶ Clone Voices (American English)'}
+        </button>
+        {allDone && (
+          <button className="btn btn-small" style={{ color: 'var(--gold)' }} onClick={() => go('script')}>
+            Continue to Script →
+          </button>
+        )}
+      </div>
+
+      {allDone && (
+        <div className="help" style={{ marginTop: 10 }}>
+          Clones are now in the <strong style={{ color: 'var(--gold)' }}>Character Vault</strong> and in the Stage 2 dropdown. Go back up to Stage 2 to hear them and decide whether to use the show's own voices or swap in someone from your global roster.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Stage 5: Script ---------- */
+function SubScript({ job, upd, characters, setCharacters, pushToast, go, config }) {
+  const [filter, setFilter] = useState('All');
+  const [showRaw, setShowRaw] = useState(true);
+  const [showEmotion, setShowEmotion] = useState(true);
+  const [viewStyle, setViewStyle] = useState('standard'); // 'standard' | 'dialect'
+  const [busy, setBusy] = useState(null); // 'transcribe' | 'translate' | 'direct'
+  const importRef = useRef(null);
+
+  const segs = job.segments;
+  const speakerSet = useMemo(() => Array.from(new Set(segs.map(s => s.speaker))), [segs]);
+  const filtered = filter === 'All' ? segs : segs.filter(s => s.speaker === filter);
+
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+
+  // Restore cast mapping from disk if assignments are empty (e.g. after page refresh)
+  const epFolderForCast = job.episodeFolder || slugify(job.episodeName || 'episode');
+  useEffect(() => {
+    if (Object.keys(job.assignments || {}).length > 0) return;
+    fetch(`/api/cast_mapping?ep_folder=${encodeURIComponent(epFolderForCast)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.assignments && Object.keys(data.assignments).length > 0) {
+          upd({ assignments: data.assignments });
+        }
+      })
+      .catch(() => {});
+  }, [epFolderForCast]); // eslint-disable-line
+
+  // Auto-restore segments + directed/translated flags from state_director.json on page refresh
+  useEffect(() => {
+    if (job.segments.length > 0) return; // already loaded
+    fetch(`/api/checkpoint?ep_folder=${encodeURIComponent(epFolderForCast)}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(segsData => {
+        if (!Array.isArray(segsData) || segsData.length === 0) return;
+        const songSpk = job.songSpeakers || {};
+        const restored = segsData.map(s => songSpk[s.speaker] ? { ...s, isSong: true } : s);
+        upd({
+          segments: restored,
+          transcribed: true,
+          translated: segsData.some(s => s.translated_text),
+          directed: segsData.some(s => s.emotion_line),
+          directed_dialect: segsData.some(s => s.emotion_line_dialect),
+          translated_dialect: segsData.some(s => s.translated_text_dialect),
+        });
+      })
+      .catch(() => {});
+  }, [epFolderForCast]); // eslint-disable-line
+
+  const charForSpeaker = (sp) => characters.find(c => c.id === job.assignments?.[sp]);
+
+  // Apply songSpeakers flags whenever segments change (e.g. after load/restore)
+  const applySongSpeakers = (segsData) => {
+    const ss = job.songSpeakers || {};
+    if (Object.keys(ss).length === 0) return segsData;
+    return segsData.map(s => ss[s.speaker] ? { ...s, isSong: true } : s);
+  };
+
+  const runStep = (step) => {
+
+    if (step === 'transcribe' && !job.isolated) {
+      pushToast({ kind: 'error', title: 'Isolate vocals first', msg: 'Whisper runs on vocals.wav' });
+      return;
+    }
+    if ((step === 'translate' || step === 'translate_dialect') && !job.transcribed) {
+      pushToast({ kind: 'error', title: 'Transcribe first' }); return;
+    }
+    if ((step === 'direct' || step === 'direct_dialect') && !job.translated) {
+      pushToast({ kind: 'error', title: 'Run Standard Translate first' }); return;
+    }
+
+    setBusy(step);
+    startLogPolling();
+
+    const epFolder = job.episodeFolder || slugify(job.episodeName || 'episode');
+
+    if (step === 'transcribe') {
+      const payload = {
+        ep_folder: epFolder,
+        show_name: job.projectTitle || '',
+        audio:     job.media?.name ? `workspace/1_inputs/${job.media.name}` : '',
+        lang:      job.sourceLang ? LANG_CODE[job.sourceLang] || 'ja' : 'ja',
+      };
+      pushToast({ kind: 'info', title: 'Transcribing…', msg: 'Whisper + pyannote running' });
+      apiPost('/api/transcribe', payload)
+        .then(() => {
+          const poll = setInterval(() => {
+            apiGet(`/api/checkpoint?ep_folder=${encodeURIComponent(epFolder)}`).then(segsData => {
+              if (!Array.isArray(segsData) || segsData.length === 0) return;
+              clearInterval(poll);
+              upd({ segments: applySongSpeakers(segsData), transcribed: true, translated: segsData.some(s => s.translated_text), directed: segsData.some(s => s.emotion_line) });
+              setBusy(null);
+              pushToast({ kind: 'success', title: 'Transcription done', msg: `${segsData.length} segments loaded` });
+            }).catch(() => {});
+          }, 1500);
+        })
+        .catch(e => { setBusy(null); pushToast({ kind: 'error', title: 'Transcribe error', msg: String(e?.message || e) }); });
+
+    } else if (step === 'translate' || step === 'translate_dialect') {
+      const style = step === 'translate_dialect' ? 'dialect' : 'standard';
+      const styleLabel = style === 'dialect' ? 'AAVE Dialect' : 'Standard';
+      pushToast({ kind: 'info', title: `Translating (${styleLabel})…`, msg: 'Ollama translating dialogue to English' });
+      apiPost('/api/translate', { ep_folder: epFolder, show_name: job.projectTitle || '', style })
+        .then(() => {
+          const poll = setInterval(() => {
+            apiGet(`/api/translate_status?ep_folder=${encodeURIComponent(epFolder)}&style=${style}`).then(res => {
+              if (res.done !== undefined) pushToast({ kind: 'info', title: `Translating ${styleLabel}… ${res.done}/${res.total}` });
+              if (res.status === 'done') {
+                clearInterval(poll);
+                apiGet(`/api/checkpoint?ep_folder=${encodeURIComponent(epFolder)}`).then(segsData => {
+                  if (Array.isArray(segsData) && segsData.length) {
+                    upd({
+                      segments: applySongSpeakers(segsData),
+                      translated: segsData.some(s => s.translated_text),
+                      translated_dialect: segsData.some(s => s.translated_text_dialect),
+                    });
+                  }
+                }).catch(() => {});
+                setBusy(null);
+                pushToast({ kind: 'success', title: `Translation (${styleLabel}) done` });
+              } else if (res.status === 'error') {
+                clearInterval(poll); setBusy(null);
+                pushToast({ kind: 'error', title: `Translation (${styleLabel}) failed`, msg: res.error || '' });
+              }
+            }).catch(() => {});
+          }, 2000);
+        })
+        .catch(e => { setBusy(null); pushToast({ kind: 'error', title: 'Translate error', msg: String(e?.message || e) }); });
+
+    } else if (step === 'direct' || step === 'direct_dialect') {
+      const style = step === 'direct_dialect' ? 'dialect' : 'standard';
+      const styleLabel = style === 'dialect' ? 'AAVE Dialect' : 'Standard';
+      pushToast({ kind: 'info', title: `Directing (${styleLabel})…`, msg: 'Ollama adding emotion tags' });
+      apiPost('/api/direct', { ep_folder: epFolder, show_name: job.projectTitle || '', style })
+        .then(() => {
+          const poll = setInterval(() => {
+            apiGet(`/api/direct_status?ep_folder=${encodeURIComponent(epFolder)}&style=${style}`).then(res => {
+              if (res.status === 'done') {
+                clearInterval(poll);
+                apiGet(`/api/checkpoint?ep_folder=${encodeURIComponent(epFolder)}`).then(segsData => {
+                  if (Array.isArray(segsData) && segsData.length) {
+                    upd({
+                      segments: applySongSpeakers(segsData),
+                      directed: segsData.some(s => s.emotion_line),
+                      directed_dialect: segsData.some(s => s.emotion_line_dialect),
+                    });
+                  }
+                }).catch(() => {});
+                setBusy(null);
+                pushToast({ kind: 'success', title: `Direction (${styleLabel}) done` });
+              } else if (res.status === 'error') {
+                clearInterval(poll); setBusy(null);
+                pushToast({ kind: 'error', title: `Direction (${styleLabel}) failed`, msg: res.error || '' });
+              }
+            }).catch(() => {});
+          }, 2000);
+        })
+        .catch(e => { setBusy(null); pushToast({ kind: 'error', title: 'Direct error', msg: String(e?.message || e) }); });
+    }
+  };
+
+  const importJSON = (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        const imported = Array.isArray(data) ? data : (data.segments || []);
+        const hasEmo = imported.some(s => s.emotion_line);
+        const hasTr = imported.some(s => s.translated_text);
+        upd({ segments: imported, transcribed: true, translated: hasTr, directed: hasEmo });
+        pushToast({ kind: 'success', title: 'Imported', msg: `${imported.length} segments from ${file.name}` });
+      } catch { pushToast({ kind: 'error', title: 'Import failed', msg: 'Not valid JSON' }); }
+    };
+    reader.readAsText(file); e.target.value = '';
+  };
+
+  const saveJSON = () => {
+    const epF = job.episodeFolder || slugify(job.episodeName);
+    // Save to server so isSong flags and edits persist for the actor
+    fetch('/api/save_segments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ep_folder: epF, segments: segs }),
+    }).then(() => pushToast({ kind: 'success', title: 'Script saved', msg: 'state_director.json updated on server' }))
+      .catch(() => pushToast({ kind: 'error', title: 'Save failed' }));
+  };
+
+  const epFolder   = job.episodeFolder || slugify(job.episodeName);
+  const transcriptFolder = `jobs/${epFolder}`;
+  const transcriptFile   = `jobs/${epFolder}/state_director.json`;
+
+  const saveTranscript = () => {
+    const detected = Array.from(new Set(segs.filter(isDialogue).map(s => s.speaker)));
+    const doc = {
+      show:    job.projectTitle,
+      episode: job.episodeName,
+      label:   job.episodeLabel,
+      folder:  transcriptFolder,
+      generated: new Date().toISOString(),
+      speakers: detected.map(id => ({
+        id,
+        gender: SPEAKER_GENDER[id] || 'Unknown',
+        assignedChar: job.assignments[id] || null,
+      })),
+      segments: segs,
+    };
+    const blob = new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = `${epFolder}_transcript.json`; a.click();
+    upd({ transcriptReady: true });
+    pushToast({ kind: 'success', title: 'Transcript saved', msg: transcriptFile });
+  };
+
+  const sendToVault = () => {
+    const detected = Array.from(new Set(segs.filter(isDialogue).map(s => s.speaker)));
+    let added = 0;
+    setCharacters(prev => {
+      const next = [...prev];
+      detected.forEach(id => {
+        if (next.find(c => c.id === id)) return;
+        next.push({
+          id, name: id,
+          gender: SPEAKER_GENDER[id] || 'Unknown',
+          domain: 'show', show: job.projectTitle, showSlug: job.slug,
+          file: `characters/shows/${job.slug}/${id}/avatar_monologue.wav`,
+          notes: `Auto-detected from ${job.episodeLabel}. Rename once voice is cloned.`,
+          fav: false, usage: 0,
+        });
+        added++;
+      });
+      return next;
+    });
+    pushToast({ kind: 'success', title: `${added} speaker(s) sent to Character Vault`, msg: 'Rename & clone voices in the Vault tab.' });
+  };
+
+  const updateEmotion  = (id, val) => upd({ segments: segs.map(s => s.id === id ? { ...s, emotion_line: val } : s) });
+  const updateSpeaker  = (id, val) => upd({ segments: segs.map(s => s.id === id ? { ...s, speaker: val } : s) });
+  const toggleIsSong   = (id) => upd({ segments: segs.map(s => s.id === id ? { ...s, isSong: !s.isSong } : s) });
+  // Use detected speakers so all options are available, not just those already in segments
+  const allSpeakers    = (job.detectedSpeakers?.length ? job.detectedSpeakers : Array.from(new Set(segs.filter(s => !s.isSong).map(s => s.speaker)))).sort();
+
+  return (
+    <>
+      <input ref={importRef} type="file" accept=".json" hidden onChange={importJSON} />
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="stage-head">
+          <div className="panel-title">Transcript &amp; Script</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {job.transcribed && <span className="badge done">Transcribed</span>}
+            {job.translated && <span className="badge done">Standard</span>}
+            {job.translated_dialect && <span className="badge done" style={{ background: 'rgba(212,175,55,0.18)', color: 'var(--gold)', border: '1px solid var(--gold)' }}>AAVE</span>}
+            {job.directed && <span className="badge done">Directed</span>}
+            {job.directed_dialect && <span className="badge done" style={{ background: 'rgba(212,175,55,0.18)', color: 'var(--gold)', border: '1px solid var(--gold)' }}>AAVE Directed</span>}
+          </div>
+        </div>
+        <div id="log-console-box" className="log" style={{ marginBottom: 12 }}>
+          <div style={{ color: 'var(--ink-3)' }}>Backend logs will appear here after you press â–¶ Transcribe.</div>
+        </div>
+        {epFolder && (
+          <div style={{ background: 'var(--bg-1)', border: '1px solid var(--line)', borderRadius: 4, padding: '8px 12px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Output folder</span>
+            <code style={{ fontSize: 11, color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{transcriptFile}</code>
+            {job.transcriptReady && <span className="badge done" style={{ marginLeft: 'auto' }}>Saved</span>}
+          </div>
+        )}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button className="btn btn-primary btn-small" onClick={() => runStep('transcribe')} disabled={!!busy}>{busy==='transcribe' ? '⏳ Transcribing…' : 'â–¶ Transcribe'}</button>
+
+          <button className="btn btn-small" onClick={() => runStep('translate')} disabled={!!busy || !job.transcribed} title="Clean natural American English">{busy==='translate' ? '⏳ Standard…' : job.translated ? '✓ Standard' : 'Translate (Standard)'}</button>
+          <button className="btn btn-small" onClick={() => runStep('translate_dialect')} disabled={!!busy || !job.transcribed} style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }} title="Authentic AAVE dialect">{busy==='translate_dialect' ? '⏳ AAVE…' : job.translated_dialect ? '✓ AAVE' : 'Translate (AAVE)'}</button>
+          <button className="btn btn-small" onClick={() => runStep('direct')} disabled={!!busy || !job.translated} title="Emotion tags for standard track">{busy==='direct' ? '⏳ Direct…' : job.directed ? '✓ Direct' : 'Direct (Standard)'}</button>
+          <button className="btn btn-small" onClick={() => runStep('direct_dialect')} disabled={!!busy || !job.translated_dialect} style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }} title="Emotion tags for AAVE track">{busy==='direct_dialect' ? '⏳ Direct AAVE…' : job.directed_dialect ? '✓ Direct AAVE' : 'Direct (AAVE)'}</button>
+          <span style={{ width: 1, height: 22, background: 'var(--line)', margin: '0 2px' }}></span>
+          <button className="btn btn-ghost btn-small" onClick={() => importRef.current?.click()}><Ico.upload width="13" height="13" style={{ marginRight: 5, verticalAlign: -2 }}/>Import JSON</button>
+          {segs.length > 0 && <button className="btn btn-ghost btn-small" onClick={saveJSON}><Ico.download width="13" height="13" style={{ marginRight: 5, verticalAlign: -2 }}/>Save JSON</button>}
+          {segs.length > 0 && <button className="btn btn-ghost btn-small" onClick={saveTranscript} title={`Saves to ${transcriptFile}`}><Ico.download width="13" height="13" style={{ marginRight: 5, verticalAlign: -2 }}/>Save Transcript</button>}
+          {segs.length > 0 && <button className="btn btn-ghost btn-small" onClick={sendToVault} style={{ color: 'var(--gold)' }}>â†— Send Speakers to Vault</button>}
+          <div style={{ flex: 1 }}></div>
+          {segs.length > 0 && <>
+            <select className="select" value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: 180 }}>
+              <option value="All">All</option>
+              {speakerSet.map(s => {
+                const charId = job.assignments?.[s];
+                const charName = charId ? characters.find(c => c.id === charId)?.name : null;
+                return <option key={s} value={s}>{charName ? `${charName} (${s})` : s}</option>;
+              })}
+            </select>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--ink-2)' }}><div className={'toggle' + (showRaw ? ' on' : '')} onClick={() => setShowRaw(r => !r)}></div>Raw</label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--ink-2)' }}><div className={'toggle' + (showEmotion ? ' on' : '')} onClick={() => setShowEmotion(r => !r)}></div>Emotion</label>
+            {(job.translated_dialect) && (
+              <div style={{ display: 'flex', gap: 4, marginLeft: 8, background: 'var(--surface-2)', borderRadius: 6, padding: '2px 4px' }}>
+                <button className={`btn btn-small${viewStyle==='standard'?' btn-primary':''}`} style={{ padding: '2px 8px', fontSize: 11 }} onClick={() => setViewStyle('standard')}>Std</button>
+                <button className={`btn btn-small${viewStyle==='dialect'?' btn-primary':''}`} style={{ padding: '2px 8px', fontSize: 11, ...(viewStyle!=='dialect'?{color:'var(--gold)',borderColor:'var(--gold)'}:{}) }} onClick={() => setViewStyle('dialect')}>AAVE</button>
+              </div>
+            )}
+          </>}
+        </div>
+        {job.transcribed && (
+          <div className="help" style={{ marginTop: 12 }}>
+            Bad Ollama pass? Hit <strong style={{ color: 'var(--gold)' }}>Direct (Ollama)</strong> again ” vocals stay isolated and the translation stays put; only emotion tags + natural rewrite are regenerated.
+          </div>
+        )}
+      </div>
+
+      {segs.length === 0 ? (
+        <div className="empty" style={{ padding: '48px 0' }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>🎙️</div>
+          <div style={{ fontSize: 15, color: 'var(--ink-2)', marginBottom: 6 }}>No transcript yet.</div>
+          <div style={{ fontSize: 13, color: 'var(--ink-3)' }}>Hit <strong style={{color:'var(--red)'}}>â–¶ Transcribe</strong> to run faster-whisper + pyannote, or import a saved <code>.json</code>.</div>
+        </div>
+      ) : (
+        <>
+          <div>
+            {filtered.map(seg => {
+              const ch = charForSpeaker(seg.speaker);
+              return (
+                <div key={seg.id} className="line" style={{ opacity: seg.isSong ? 0.45 : 1, borderLeft: seg.isSong ? '3px solid var(--gold)' : undefined }}>
+                  <div className="line-head">
+                    <div className="line-meta">
+                      <span className="line-num">#{String(seg.id + 1).padStart(3, '0')}</span>
+                      <button
+                        onClick={() => toggleIsSong(seg.id)}
+                        title={seg.isSong ? 'Marked as song ” click to unmark' : 'Mark as song (skip TTS)'}
+                        style={{ fontSize: 11, padding: '1px 5px', borderRadius: 3, border: `1px solid ${seg.isSong ? 'var(--gold)' : 'var(--line-2)'}`, background: seg.isSong ? 'rgba(234,179,8,0.15)' : 'transparent', color: seg.isSong ? 'var(--gold)' : 'var(--ink-3)', cursor: 'pointer', flexShrink: 0 }}
+                      >♪</button>
+                      <select
+                        value={seg.speaker}
+                        onChange={(e) => updateSpeaker(seg.id, e.target.value)}
+                        title="Override speaker for this line"
+                        style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--gold)', background: 'transparent', border: 'none', borderBottom: '1px dashed var(--gold-dim)', cursor: 'pointer', padding: '0 2px', outline: 'none', letterSpacing: '0.06em' }}
+                      >
+                        {allSpeakers.map(sp => <option key={sp} value={sp} style={{ background: 'var(--bg-1)', color: 'var(--ink-1)' }}>{sp}</option>)}
+                      </select>
+                      <span className="line-arr">→</span>
+                      <span className="line-char">{seg.isSong ? <span style={{color:'var(--gold)'}}>♪ song ” skipped</span> : ch ? ch.name : <em style={{color:'var(--ink-3)'}}>unassigned</em>}</span>
+                    </div>
+                    <span className="line-time">{fmtTime(seg.start)} → {fmtTime(seg.end)}</span>
+                  </div>
+                  {showRaw && seg.text && <div className="line-row"><span className="lab">Raw</span><span className="line-text-raw">{seg.text}</span></div>}
+                  {viewStyle === 'dialect'
+                    ? seg.translated_text_dialect && <div className="line-row"><span className="lab" style={{ color: 'var(--gold)' }}>AAVE</span><span className="line-text-tr" style={{ color: 'var(--gold)' }}>{seg.translated_text_dialect}</span></div>
+                    : seg.translated_text && <div className="line-row"><span className="lab">Trans</span><span className="line-text-tr">{seg.translated_text}</span></div>
+                  }
+                  {showEmotion && (viewStyle === 'dialect' ? job.directed_dialect : job.directed) && (
+                    <div className="line-row" style={{ alignItems: 'flex-start' }}>
+                      <span className="lab" style={{ marginTop: 10, ...(viewStyle==='dialect'?{color:'var(--gold)'}:{}) }}>Emotion</span>
+                      <input className="input"
+                        value={(viewStyle === 'dialect' ? seg.emotion_line_dialect : seg.emotion_line) || ''}
+                        onChange={(e) => updateEmotion(seg.id, e.target.value)}
+                        style={{ background: 'var(--bg-2)', ...(viewStyle==='dialect'?{borderColor:'var(--gold)'}:{}) }} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {job.directed && (
+            <div className="lock-bar">
+              <div className="lock-note locked"><span className="dot"></span>Script locked · state_director.json</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-small" onClick={saveJSON}>Save Edited Script</button>
+                <button className="btn btn-gold btn-small" onClick={() => go('voices')}>Continue to Voices →</button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </>
+  );
+}
+
+/* ---------- Stage 6: Voices ---------- */
+function SubVoices({ job, upd, characters, pushToast, go }) {
+  const [genAll, setGenAll] = useState(false);
+  const [genIdx, setGenIdx] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [playing, setPlaying] = useState(null);
+  const [dubStyle, setDubStyle] = useState('standard');
+
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+
+  const segs = job.segments;
+  const readyStandard = job.directed && segs.length > 0;
+  const readyDialect  = job.directed_dialect && segs.length > 0;
+  const ready = dubStyle === 'dialect' ? readyDialect : readyStandard;
+  const doneCount = Object.values(job.lineDone).filter(Boolean).length;
+  const audioDir  = dubStyle === 'dialect' ? 'tts_audio_dialect' : 'tts_audio';
+
+  const generateAll = (style) => {
+    if (style === 'dialect' && !readyDialect) { pushToast({ kind: 'error', title: 'Run Direct (AAVE) first' }); return; }
+    if (style === 'standard' && !readyStandard) { pushToast({ kind: 'error', title: 'Run Direct (Standard) first' }); return; }
+    const epFolder = job.episodeFolder || slugify(job.episodeName || 'episode');
+    const label = style === 'dialect' ? 'AAVE Dialect' : 'Standard';
+    setGenAll(true);
+    pushToast({ kind: 'info', title: `IndexTTS-2 booting (${label})`, msg: `${segs.length} lines queued` });
+    fetch('/api/actor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ep_folder: epFolder, show_slug: job.slug, assignments: job.assignments, style }),
+    })
+      .then(r => r.json())
+      .then(() => {
+        const poll = setInterval(() => {
+          fetch(`/api/actor_status?ep_folder=${encodeURIComponent(epFolder)}&style=${style}`)
+            .then(r => r.json())
+            .then(res => {
+              if (res.done_lines) {
+                const lineDone = {};
+                res.done_lines.forEach(id => { lineDone[id] = true; });
+                upd({ lineDone });
+              }
+              if (res.status === 'done') {
+                clearInterval(poll);
+                setGenAll(false);
+                upd({ voicesDone: true });
+                pushToast({ kind: 'success', title: `All voices generated (${label})`, msg: `${segs.length} lines → ${style === 'dialect' ? 'tts_audio_dialect' : 'tts_audio'}/` });
+              } else if (res.status === 'error') {
+                clearInterval(poll);
+                setGenAll(false);
+                pushToast({ kind: 'error', title: 'Actor failed', msg: res.error || '' });
+              }
+            }).catch(() => {});
+        }, 4000);
+      })
+      .catch(e => { setGenAll(false); pushToast({ kind: 'error', title: 'Actor error', msg: String(e) }); });
+  };
+
+  const [regenning, setRegenning] = React.useState(null); // line id being regen'd
+  const regenLine = (seg) => {
+    if (!seg || regenning != null) return;
+    const epFolder = job.episodeFolder || slugify(job.episodeName || 'episode');
+    setRegenning(seg.id);
+    fetch('/api/regen_line', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ep_folder: epFolder, line_id: seg.id, show_slug: job.slug, assignments: job.assignments, style: dubStyle }),
+    }).then(() => {
+      const poll = setInterval(() => {
+        fetch(`/api/regen_line_status?ep_folder=${encodeURIComponent(epFolder)}&line_id=${seg.id}&style=${dubStyle}`)
+          .then(r => r.json())
+          .then(res => {
+            if (res.status === 'done') {
+              clearInterval(poll);
+              setRegenning(null);
+              upd({ lineDone: { ...job.lineDone, [seg.id]: true } });
+              pushToast({ kind: 'success', title: 'Line regenerated', msg: `line_${String(seg.id).padStart(4,'0')}.wav` });
+            } else if (res.status === 'error') {
+              clearInterval(poll);
+              setRegenning(null);
+              pushToast({ kind: 'error', title: 'Regen failed', msg: res.error || 'Check terminal' });
+            }
+          }).catch(() => {});
+      }, 1500);
+    }).catch(e => { setRegenning(null); pushToast({ kind: 'error', title: 'Regen error', msg: String(e) }); });
+  };
+
+  const previewAudioRef = React.useRef(null);
+  const previewLine = (seg) => {
+    if (previewAudioRef.current) { previewAudioRef.current.pause(); previewAudioRef.current = null; }
+    if (playing === seg.id) { setPlaying(null); return; }
+    const epFolder = job.episodeFolder || slugify(job.episodeName || 'episode');
+    const wavPath = `jobs/${epFolder}/${audioDir}/line_${String(seg.id).padStart(4,'0')}.wav`;
+    const a = new Audio('/' + wavPath);
+    previewAudioRef.current = a;
+    setPlaying(seg.id);
+    a.play().catch(() => pushToast({ kind: 'error', title: 'No audio yet', msg: 'Generate this line first' }));
+    a.onended = () => setPlaying(null);
+  };
+
+  return (
+    <div className="panel">
+      <div className="stage-head">
+        <div className="panel-title">Stage 3 · Actor (IndexTTS-2)</div>
+        {job.voicesDone ? <span className="badge done">All lines</span> : <span className="badge pending">{doneCount}/{segs.length} lines</span>}
+      </div>
+      <div className="help" style={{ marginTop: -6, marginBottom: 16 }}>Each line is synthesized with the speaker's assigned reference voice. Generate everything, or fix just one line ” regenerating a single line never touches the rest.</div>
+
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>Previewing:</span>
+        <button className={`btn btn-small${dubStyle === 'standard' ? ' btn-primary' : ''}`} onClick={() => setDubStyle('standard')}>Standard</button>
+        <button className={`btn btn-small${dubStyle === 'dialect' ? ' btn-primary' : ''}`} onClick={() => setDubStyle('dialect')} style={dubStyle !== 'dialect' ? { borderColor: 'var(--gold)', color: 'var(--gold)' } : {}}>AAVE Dialect</button>
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+        <button className="btn btn-primary btn-small" onClick={() => generateAll('standard')} disabled={genAll || !readyStandard}>{genAll && dubStyle==='standard' ? `⏳ ${genIdx}/${segs.length}…` : 'â–¶ Generate Standard'}</button>
+        <button className="btn btn-small" onClick={() => generateAll('dialect')} disabled={genAll || !readyDialect} style={{ borderColor: 'var(--gold)', color: 'var(--gold)' }}>{genAll && dubStyle==='dialect' ? `⏳ ${genIdx}/${segs.length}…` : 'â–¶ Generate AAVE'}</button>
+        <button className="btn btn-small" onClick={() => selected != null && regenLine(segs.find(s => s.id === selected))} disabled={selected == null || regenning != null}>{regenning != null ? `⏳ Regen line_${String(regenning).padStart(4,'0')}…` : <><Ico.regen width="13" height="13" style={{ marginRight: 5, verticalAlign: -2 }}/>Regen Selected</>}</button>
+        <button className="btn btn-small" onClick={() => selected != null && previewLine(segs.find(s => s.id === selected))} disabled={selected == null}><Ico.play width="12" height="12" style={{ marginRight: 5, verticalAlign: -1 }}/>Preview ({dubStyle === 'dialect' ? 'AAVE' : 'Std'})</button>
+      </div>
+
+      {genAll && <div style={{ marginBottom: 16 }}><div className="stage-bar" style={{ height: 5 }}><div className="stage-bar-fill" style={{ width: (genIdx/segs.length*100) + '%' }}></div></div></div>}
+
+      {!ready ? (
+        <div className="empty">Direct the script (Stage 5) before generating voices.</div>
+      ) : segs.map(seg => {
+        const ch = characters.find(c => c.id === job.assignments[seg.speaker]);
+        const done = job.lineDone[seg.id];
+        return (
+          <div key={seg.id} className={'line' + (selected === seg.id ? ' sel' : '')} onClick={() => setSelected(seg.id)} style={{ cursor: 'pointer' }}>
+            <div className="line-head">
+              <div className="line-meta">
+                <span className="line-num">#{String(seg.id + 1).padStart(3, '0')}</span>
+                <span className="line-spk">{seg.speaker}</span>
+                <span className="line-arr">→</span>
+                <span className="line-char">{ch ? ch.name : '”'}</span>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                {done ? <span className="badge done" style={{ fontSize: 9 }}>line_{String(seg.id).padStart(4,'0')}.wav</span> : <span className="badge pending" style={{ fontSize: 9 }}>not generated</span>}
+                <button className="icon-btn" style={{ width: 28, height: 28, background: 'var(--bg-2)' }} onClick={(e) => { e.stopPropagation(); previewLine(seg); }} disabled={!done} title="Preview"><Ico.play width="12" height="12"/></button>
+                <button className="icon-btn" style={{ width: 28, height: 28, background: 'var(--bg-2)' }} onClick={(e) => { e.stopPropagation(); regenLine(seg); }} title="Regenerate this line"><Ico.regen width="13" height="13"/></button>
+              </div>
+            </div>
+            <div className="line-row"><span className="lab">Line</span><span className="line-text-tr">{seg.emotion_line || seg.translated_text || seg.text}</span></div>
+            {done && <div className={'wave-strip' + (playing === seg.id ? ' playing' : '')} style={{ marginTop: 8 }}>{waveHeights(seg.id + 2, 48).map((h,k)=><span key={k} style={{height:h+'%'}}></span>)}</div>}
+          </div>
+        );
+      })}
+
+      {ready && (
+        <LockBar locked={job.voicesDone} lockedText="All lines rendered · tts_audio/" idleText={`${doneCount}/${segs.length} lines rendered`}
+          onContinue={() => go('mixer')} continueLabel="Continue to Mixer →" />
+      )}
+    </div>
+  );
+}
+
+/* ---------- Stage 7: Mixer ---------- */
+function SubMixer({ job, upd, go }) {
+  if (!job.episodeId) return <NeedEpisode go={go} />;
+  return (
+    <>
+      <div className="grid-2" style={{ marginBottom: 20 }}>
+        <div className="panel">
+          <div className="panel-title">Audio Mix</div>
+          <div className="field">
+            <div className="label">Dub track volume <span style={{ color: 'var(--gold)', float: 'right', fontFamily: 'JetBrains Mono, monospace' }}>{job.dubVol.toFixed(2)}Ã—</span></div>
+            <input type="range" className="slider" min="0.5" max="1.5" step="0.05" value={job.dubVol} onChange={(e) => upd({ dubVol: +e.target.value })} />
+            <div className="help">Generated voice track in the final mix.</div>
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Background (music + SFX) <span style={{ color: 'var(--gold)', float: 'right', fontFamily: 'JetBrains Mono, monospace' }}>{job.bgVol.toFixed(2)}Ã—</span></div>
+            <input type="range" className="slider" min="0.3" max="1.2" step="0.05" value={job.bgVol} onChange={(e) => upd({ bgVol: +e.target.value })} />
+            <div className="help">The Demucs <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>no_vocals.wav</code> stem.</div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-title">Lip-Sync / Time Stretch</div>
+          <div className="field">
+            <div className="label">Min stretch ratio <span style={{ color: 'var(--gold)', float: 'right', fontFamily: 'JetBrains Mono, monospace' }}>{job.stretchMin.toFixed(2)}</span></div>
+            <input type="range" className="slider" min="0.5" max="1.0" step="0.05" value={job.stretchMin} onChange={(e) => upd({ stretchMin: +e.target.value })} />
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Max compression ratio <span style={{ color: 'var(--gold)', float: 'right', fontFamily: 'JetBrains Mono, monospace' }}>{job.stretchMax.toFixed(2)}</span></div>
+            <input type="range" className="slider" min="1.0" max="2.0" step="0.05" value={job.stretchMax} onChange={(e) => upd({ stretchMax: +e.target.value })} />
+            <div className="help">Lines outside these limits play at natural TTS speed.</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="panel-title">Output Encoding</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ fontSize: 13, color: '#fff' }}>NVENC hardware encoding</div>
+            <div className="help" style={{ marginTop: 2 }}>RTX 4050+ ” falls back to libx264 if absent.</div>
+          </div>
+          <div className={'toggle' + (job.nvenc ? ' on' : '')} onClick={() => upd({ nvenc: !job.nvenc })}></div>
+        </div>
+        <LockBar locked lockedText="Mix settings ready" onContinue={() => go('export')} continueLabel="Continue to Export →" />
+      </div>
+    </>
+  );
+}
+
+/* ---------- Stage 8: Export ---------- */
+function SubExport({ job, upd, setProjects, pushToast, stageDone }) {
+  const [running, setRunning] = useState(false);
+  const [stage, setStage] = useState(0);
+  const [prog, setProg] = useState(0);
+  const [logs, setLogs] = useState([]);
+
+  if (!job.episodeId) return <div className="empty" style={{ padding: '48px 0' }}>Load an episode in the Project stage first.</div>;
+
+  const checks = {
+    'Source Media': stageDone.source,
+    'Vocals Isolated': stageDone.isolate,
+    'Cast Assigned': stageDone.speakers,
+    'Script Directed': stageDone.script,
+    'Voices Generated': stageDone.voices,
+  };
+  const allOk = Object.values(checks).every(Boolean);
+  const now = () => new Date().toLocaleTimeString([], { hour12: false });
+
+  const stages = [
+    { name: 'Time-stretch', s: 4 },
+    { name: 'Mix over no_vocals', s: 4 },
+    { name: 'Encode (NVENC)', s: 4 },
+    { name: 'Mux audio + video', s: 4 },
+  ];
+
+  const run = () => {
+    if (!allOk) { pushToast({ kind: 'error', title: 'Finish earlier stages first' }); return; }
+    setRunning(true); setStage(0); setProg(0); setLogs([{ t: now(), s: 4, msg: 'Starting sync + mux pipeline…' }]);
+  };
+
+  useEffect(() => {
+    if (!running) return;
+    const lines = [
+      ['Loading 142 tts_audio clips…', 'Stretching to segment windows…', 'librosa time-stretch 0.6‘1.8Ã—'],
+      ['Ducking background −' + Math.round((1-job.bgVol)*100) + '%…', 'Overlaying dub @ ' + job.dubVol.toFixed(2) + 'Ã—…', 'Normalizing −1 dBFS'],
+      [job.nvenc ? 'h264_nvenc CQ 19…' : 'libx264 CRF 18…', 'GOP 2s, yuv420p'],
+      ['Muxing AAC 192k…', 'Writing container…'],
+    ];
+    const t = setInterval(() => {
+      setProg(p => {
+        const n = p + 5 + Math.random() * 7;
+        if (n >= 100) {
+          setStage(s => {
+            if (s >= 3) {
+              clearInterval(t); setRunning(false);
+              const path = `${job.outputPath || `${job.slug}_${job.episodeLabel}_dubbed.mp4`}`;
+              const outPath = `workspace/5_outputs/${job.slug}_${job.episodeLabel}_dubbed.mp4`;
+              upd({ exported: true, outputPath: outPath });
+              setLogs(l => [...l, { t: now(), s: 4, msg: `Done! Output: ${outPath}` }]);
+              // mark episode complete in the project + library
+              setProjects(prev => prev.map(p => p.id === job.projectId ? {
+                ...p, episodes: p.episodes.map(e => e.id === job.episodeId ? {
+                  ...e, status: 'complete', size: 214, date: new Date().toLocaleString([], { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' }), outputPath: outPath
+                } : e)
+              } : p));
+              pushToast({ kind: 'success', title: 'Dub exported', msg: outPath });
+              return s;
+            }
+            setLogs(l => [...l, { t: now(), s: 4, msg: `→ ${stages[s + 1].name}` }]);
+            return s + 1;
+          });
+          return 0;
+        }
+        return n;
+      });
+      if (Math.random() < 0.6) setLogs(l => [...l, { t: now(), s: 4, msg: (lines[stage] || ['…'])[Math.floor(Math.random() * (lines[stage]||['…']).length)] }]);
+    }, 300);
+    return () => clearInterval(t);
+  }, [running, stage]); // eslint-disable-line
+
+  return (
+    <>
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="panel-title">Pre-Flight Checklist</div>
+        <div className="checklist">
+          {Object.entries(checks).map(([k, v]) => (
+            <div key={k} className={'checkitem' + (v ? ' ok' : '')}>
+              <div className="checkitem-label">{k}</div>
+              <div className="checkitem-status">{v ? 'READY' : 'MISSING'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="stage-head">
+          <div className="panel-title">Stage 4 · Sync &amp; Mux → Export</div>
+          <button className="btn btn-primary btn-small" onClick={run} disabled={!allOk || running}>{running ? 'Exporting…' : job.exported ? 'Re-Export' : 'Export Final Dub'}</button>
+        </div>
+        <div className="stages">
+          {stages.map((s, i) => {
+            const cls = !running && !job.exported ? 'idle' : (i < stage ? 'done' : i === stage && running ? 'run' : (job.exported ? 'done' : 'idle'));
+            const pct = !running && !job.exported ? 0 : (i < stage ? 100 : (i === stage ? Math.round(prog) : (job.exported ? 100 : 0)));
+            return (
+              <div key={s.name} className={'stage-card ' + cls}>
+                <div className="stage-num">Step {i + 1}</div>
+                <div className="stage-name">{s.name}</div>
+                <div className="stage-bar"><div className="stage-bar-fill" style={{ width: pct + '%' }}></div></div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="log">
+          {logs.length === 0 ? <div style={{ color: 'var(--ink-3)' }}>Waiting to export…</div> :
+            logs.slice(-80).map((l, k) => <div key={k}><span className="ts">[{l.t}]</span> <span className="stage4">[Sync]</span> {l.msg}</div>)}
+        </div>
+
+        {job.exported && (
+          <div style={{ marginTop: 14, padding: '14px 16px', background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <div style={{ fontSize: 13, color: '#fff', fontWeight: 500 }}>Dub complete ” added to Library</div>
+              <div style={{ fontSize: 11.5, color: 'var(--ink-2)', fontFamily: 'JetBrains Mono, monospace', marginTop: 2 }}>{job.outputPath}</div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="btn btn-small"><Ico.folder width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>Open Folder</button>
+              <button className="btn btn-primary btn-small"><Ico.download width="13" height="13" style={{ marginRight: 6, verticalAlign: -2 }}/>Download</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* =============================================================
+   CHARACTER VAULT ” global roster vs show voices + voice test
+============================================================= */
+const QUALITY_CYCLE = { good: 'okay', okay: 'poor', poor: 'good' };
+const QUALITY_LABEL = { good: '★ Good', okay: '◐ Okay', poor: '✗ Poor' };
+const QUALITY_COLOR = { good: 'var(--good)', okay: 'var(--gold)', poor: 'var(--bad)' };
+
+function CharCard({ c, characters, playingId, testId, onFav, onRemove, onQuality, onSubFor, onPlay, onTest, pushToast }) {
+  const [regenState, setRegenState] = useState('idle'); // idle | running | done | error
+  const [editSub, setEditSub] = useState(false);
+  const isSpeaker = /^SPEAKER_\d+$/i.test(c.id);
+  const quality = c.quality || 'okay';
+
+  const doRegen = () => {
+    if (!c.samplePath) { pushToast({ kind: 'error', title: 'No sample path', msg: 'Original sample was not saved with this clone.' }); return; }
+    setRegenState('running');
+    fetch('/api/regen_speaker', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ show_slug: c.showSlug, speaker_id: c.id }),
+    }).then(r => r.json()).then(() => {
+      const poll = setInterval(() => {
+        fetch(`/api/regen_status?show_slug=${encodeURIComponent(c.showSlug)}&speaker_id=${encodeURIComponent(c.id)}`)
+          .then(r => r.json()).then(res => {
+            if (res.status === 'done') {
+              clearInterval(poll);
+              setRegenState('done');
+              pushToast({ kind: 'success', title: `${c.id} regen complete`, msg: 'New avatar_monologue.wav saved.' });
+              setTimeout(() => setRegenState('idle'), 4000);
+            } else if (res.status === 'error') {
+              clearInterval(poll);
+              setRegenState('error');
+              pushToast({ kind: 'error', title: 'Regen failed', msg: res.error || '' });
+            }
+          }).catch(() => {});
+      }, 3000);
+    }).catch(e => { setRegenState('error'); pushToast({ kind: 'error', title: 'Regen failed', msg: String(e) }); });
+  };
+
+  const subOptions = characters.filter(x => x.id !== c.id);
+  const subLabels  = (c.substituteFor || []).map(id => characters.find(x => x.id === id)?.name || id).join(', ');
+
+  return (
+    <div className="char-card">
+      <button className={'char-fav' + (c.fav ? ' on' : '')} onClick={onFav} title="Favorite">
+        {c.fav ? <Ico.star width="15" height="15"/> : <Ico.starO width="15" height="15"/>}
+      </button>
+      <button className="char-remove" onClick={onRemove} title="Remove"><Ico.close width="12" height="12" /></button>
+
+      {/* Quality badge */}
+      <button onClick={onQuality} title="Click to cycle quality" style={{ position: 'absolute', top: 10, left: 10, background: 'none', border: 'none', cursor: 'pointer', fontSize: 10, color: QUALITY_COLOR[quality], fontFamily: 'JetBrains Mono, monospace', padding: 0 }}>
+        {QUALITY_LABEL[quality]}
+      </button>
+
+      <div className="char-avatar">{c.name.slice(0, 2).toUpperCase()}</div>
+      <div className="char-name">{c.name}</div>
+      <div className="char-show">{c.domain === 'global' ? 'Global Roster' : c.show}</div>
+      <div className="char-file">{c.file}</div>
+      <div className="usage-pill">Used in <b>{c.usage || 0}</b> dub{(c.usage || 0) === 1 ? '' : 's'}</div>
+
+      <div className={'wave-strip' + (playingId === c.id ? ' playing' : '')} onClick={onPlay} style={{ cursor: 'pointer' }}>
+        {waveHeights(c.id.length, 38).map((h, k) => <span key={k} style={{ height: h + '%' }}></span>)}
+      </div>
+
+      {c.notes && <div className="help" style={{ textAlign: 'left', marginTop: 10, fontStyle: 'italic' }}>"{c.notes}"</div>}
+
+      {/* Can substitute for */}
+      <div style={{ marginTop: 10 }}>
+        <div style={{ fontSize: 10, color: 'var(--ink-3)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Can sub for</div>
+        {!editSub ? (
+          <div style={{ fontSize: 11, color: subLabels ? 'var(--ink-2)' : 'var(--ink-3)', fontStyle: subLabels ? 'normal' : 'italic', cursor: 'pointer' }} onClick={() => setEditSub(true)}>
+            {subLabels || 'None ” click to assign'}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {subOptions.map(opt => (
+              <label key={opt.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, cursor: 'pointer' }}>
+                <input type="checkbox"
+                  checked={(c.substituteFor || []).includes(opt.id)}
+                  onChange={(e) => {
+                    const cur = c.substituteFor || [];
+                    onSubFor(e.target.checked ? [...cur, opt.id] : cur.filter(x => x !== opt.id));
+                  }}
+                />
+                <span style={{ color: QUALITY_COLOR[opt.quality || 'okay'] }}>{QUALITY_LABEL[opt.quality || 'okay']}</span>
+                {opt.name}
+              </label>
+            ))}
+            <button className="btn btn-small btn-ghost" style={{ marginTop: 4, alignSelf: 'flex-start' }} onClick={() => setEditSub(false)}>Done</button>
+          </div>
+        )}
+      </div>
+
+      <div className="char-actions" style={{ marginTop: 12 }}>
+        <button className="btn btn-small" onClick={onPlay}>{playingId === c.id ? 'â¹ Stop' : 'â–¶ Preview'}</button>
+        <button className="btn btn-small btn-ghost" onClick={onTest}>🎬 Voice Test</button>
+        {isSpeaker && c.domain === 'show' && (
+          <button className="btn btn-small btn-ghost" onClick={doRegen} disabled={regenState === 'running'} style={{ color: regenState === 'done' ? 'var(--good)' : regenState === 'error' ? 'var(--bad)' : undefined }}>
+            {regenState === 'running' ? '⏳ Regen…' : regenState === 'done' ? '✓ Done' : regenState === 'error' ? '✗ Failed' : 'â†º Regen'}
+          </button>
+        )}
+      </div>
+      {testId === c.id && <VoiceTest character={c} pushToast={pushToast} />}
+    </div>
+  );
+}
+
+function CharacterVault({ characters, setCharacters, pushToast }) {
+  const [domain, setDomain] = useState('global'); // 'global' | 'show'
+  const [showSlug, setShowSlug] = useState(SMOKING_SLUG);
+  const [q, setQ] = useState('');
+  const [favOnly, setFavOnly] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [name, setName] = useState('');
+  const [show, setShow] = useState('');
+  const [notes, setNotes] = useState('');
+  const [file, setFile] = useState(null);
+  const [testId, setTestId] = useState(null);
+  const [playingId, setPlayingId] = useState(null);
+  const fileRef = useRef(null);
+
+  const showSlugs = useMemo(() => Array.from(new Set(characters.filter(c => c.domain === 'show').map(c => c.showSlug))), [characters]);
+  const showName = (slug) => characters.find(c => c.showSlug === slug)?.show || slug;
+
+  // Auto-switch showSlug when new show chars load and current slug has no chars
+  useEffect(() => {
+    if (domain === 'show' && showSlugs.length && !showSlugs.includes(showSlug)) {
+      setShowSlug(showSlugs[0]);
+    }
+  }, [showSlugs]);
+
+  const list = useMemo(() => characters.filter(c => {
+    if (domain === 'global' && c.domain !== 'global') return false;
+    if (domain === 'show' && (c.domain !== 'show' || c.showSlug !== showSlug)) return false;
+    if (favOnly && !c.fav) return false;
+    if (q && !c.name.toLowerCase().includes(q.toLowerCase())) return false;
+    return true;
+  }), [characters, domain, showSlug, favOnly, q]);
+
+  const toggleFav     = (id) => setCharacters(cs => cs.map(c => c.id === id ? { ...c, fav: !c.fav } : c));
+  const cycleQuality  = (id) => setCharacters(cs => cs.map(c => c.id === id ? { ...c, quality: QUALITY_CYCLE[c.quality || 'okay'] } : c));
+  const setSubFor     = (id, val) => setCharacters(cs => cs.map(c => c.id === id ? { ...c, substituteFor: val } : c));
+  const remove        = (id) => { const c = characters.find(x => x.id === id); setCharacters(cs => cs.filter(x => x.id !== id)); if (c) pushToast({ kind: 'info', title: 'Removed from vault', msg: c.name }); };
+
+  const previewAudioRef = React.useRef(null);
+  const playPreview = (c) => {
+    if (previewAudioRef.current) { previewAudioRef.current.pause(); previewAudioRef.current = null; }
+    if (playingId === c.id) { setPlayingId(null); return; }
+    if (!c.file) return;
+    const a = new Audio('/' + c.file);
+    previewAudioRef.current = a;
+    a.play().catch(() => {});
+    a.onended = () => setPlayingId(null);
+    setPlayingId(c.id);
+  };
+
+  const add = () => {
+    if (!name.trim()) { pushToast({ kind: 'error', title: 'Name required' }); return; }
+    if (!file) { pushToast({ kind: 'error', title: 'Avatar monologue clip required' }); return; }
+    const id = slugify(name);
+    const base = domain === 'global'
+      ? `characters/global_roster/${id}/avatar_monologue.wav`
+      : `characters/shows/${showSlug}/${id}/avatar_monologue.wav`;
+    setCharacters(cs => [...cs, {
+      id: id + '_' + Date.now(), name: name.trim(), domain, show: domain === 'global' ? 'Global Roster' : showName(showSlug),
+      showSlug: domain === 'show' ? showSlug : undefined, file: base, notes: notes.trim(), fav: false, usage: 0,
+    }]);
+    pushToast({ kind: 'success', title: 'Added to vault', msg: `${name} → ${base}` });
+    setName(''); setShow(''); setNotes(''); setFile(null); setAdding(false);
+    if (fileRef.current) fileRef.current.value = '';
+  };
+
+  return (
+    <>
+      <div className="page-head">
+        <div>
+          <div className="eyebrow">Voice Library</div>
+          <h2 className="page-title">Character Vault</h2>
+          <div className="page-sub"><b style={{color:'var(--ink-2)'}}>Global Roster</b> holds general voices (actors not in any show). When you dub a show, cloned character voices are saved per show + character so you can reuse them on future episodes.</div>
+        </div>
+        <span className="pill">{characters.length} voices</span>
+      </div>
+
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="seg">
+            <button className={domain === 'global' ? 'on' : ''} onClick={() => setDomain('global')}>Global Roster</button>
+            <button className={domain === 'show' ? 'on' : ''} onClick={() => setDomain('show')}>By Show</button>
+          </div>
+          {domain === 'show' && (
+            <select className="select" value={showSlug} onChange={(e) => setShowSlug(e.target.value)} style={{ width: 280 }}>
+              {showSlugs.map(s => <option key={s} value={s}>{showName(s)}</option>)}
+            </select>
+          )}
+          <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+            <Ico.search width="15" height="15" style={{ position: 'absolute', left: 12, top: 11, color: 'var(--ink-3)' }} />
+            <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search voices…" style={{ paddingLeft: 34 }} />
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--ink-2)' }}>
+            <div className={'toggle' + (favOnly ? ' on' : '')} onClick={() => setFavOnly(f => !f)}></div>Favorites
+          </label>
+          <button className="btn btn-primary btn-small" onClick={() => setAdding(a => !a)}><Ico.plus width="13" height="13" style={{ marginRight: 5, verticalAlign: -2 }}/>Add Voice</button>
+        </div>
+
+        {adding && (
+          <div style={{ background: 'var(--bg-1)', border: '1px solid var(--line-2)', borderRadius: 6, padding: 18, marginTop: 16 }}>
+            <div className="help" style={{ marginTop: 0, marginBottom: 12 }}>Adding to <b style={{ color: 'var(--gold)' }}>{domain === 'global' ? 'Global Roster' : showName(showSlug)}</b>. The reference clip is stored as the standardized <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>avatar_monologue.wav</code>.</div>
+            <div className="grid-2" style={{ marginBottom: 14 }}>
+              <div><div className="label">Voice / Character Name</div><input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sasaki" /></div>
+              <div><div className="label">Notes (optional)</div><input className="input" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Tone, register, archetype…" /></div>
+            </div>
+            <label className="dropzone" style={{ padding: '24px', marginBottom: 14, display: 'block' }} onClick={(e) => { if (e.target.tagName !== 'INPUT') fileRef.current?.click(); }}>
+              <input ref={fileRef} type="file" accept="audio/*" hidden onChange={(e) => setFile(e.target.files[0])} />
+              <div className="glyph"><Ico.upload width="18" height="18"/></div>
+              {file ? <><div className="heading" style={{ fontSize: 15 }}>{file.name}</div><div className="sub">{(file.size/1000).toFixed(1)} KB · click to replace</div></>
+                    : <><div className="heading" style={{ fontSize: 15 }}>Drop reference clip</div><div className="sub">10s clean dialogue · saved as avatar_monologue.wav</div></>}
+            </label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="btn btn-primary btn-small" onClick={add}>Add to Vault</button>
+              <button className="btn btn-ghost btn-small" onClick={() => setAdding(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {list.length === 0 ? (
+        <div className="empty">No voices here yet. Add one with the button above.</div>
+      ) : (
+        <div className="grid-3">
+          {list.map(c => (
+            <CharCard key={c.id} c={c}
+              characters={characters}
+              playingId={playingId} testId={testId}
+              onFav={() => toggleFav(c.id)}
+              onRemove={() => remove(c.id)}
+              onQuality={() => cycleQuality(c.id)}
+              onSubFor={(val) => setSubFor(c.id, val)}
+              onPlay={() => playPreview(c)}
+              onTest={() => setTestId(testId === c.id ? null : c.id)}
+              pushToast={pushToast}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+/* Avatar monologue voice test ” runs real IndexTTS synthesis */
+function VoiceTest({ character, pushToast }) {
+  const [state, setState] = useState('idle'); // idle | gen | ready | play | error
+  const [outPath, setOutPath] = useState(null);
+  const audioRef = React.useRef(null);
+
+  const run = () => {
+    setState('gen');
+    pushToast({ kind: 'info', title: 'IndexTTS running', msg: `${character.name} reading the avatar monologue…` });
+    fetch('/api/voice_test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: character.file, char_id: character.id }),
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.error) { setState('error'); pushToast({ kind: 'error', title: 'Voice test failed', msg: res.error }); return; }
+        const path = res.out;
+        // Poll until the file appears (IndexTTS takes 10-60s)
+        const poll = setInterval(() => {
+          fetch('/' + path, { method: 'HEAD' }).then(r => {
+            if (r.ok) {
+              clearInterval(poll);
+              setOutPath(path);
+              setState('ready');
+              pushToast({ kind: 'success', title: 'Test ready', msg: `${character.name}_avatar_test.wav` });
+            }
+          }).catch(() => {});
+        }, 3000);
+      })
+      .catch(e => { setState('error'); pushToast({ kind: 'error', title: 'Voice test error', msg: String(e) }); });
+  };
+
+  const play = () => {
+    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+    if (state === 'play') { setState('ready'); return; }
+    const a = new Audio('/' + outPath);
+    audioRef.current = a;
+    setState('play');
+    a.play().catch(() => {});
+    a.onended = () => setState('ready');
+  };
+  return (
+    <div className="vtest" style={{ textAlign: 'left' }}>
+      <div className="label" style={{ marginBottom: 8 }}>Avatar Monologue · standardized test</div>
+      <div className="mono-para">{AVATAR_MONOLOGUE}</div>
+      {(state === 'idle' || state === 'error') && <button className="btn btn-small btn-primary" style={{ marginTop: 12 }} onClick={run}>{state === 'error' ? 'â†º Retry' : 'Generate Test Read'}</button>}
+      {state === 'error' && <div className="help" style={{ marginTop: 6, color: 'var(--bad)' }}>IndexTTS failed ” check server console.</div>}
+      {state === 'gen' && <div className="help" style={{ marginTop: 12 }}>⏳ Synthesizing… this takes 15‘60s depending on GPU</div>}
+      {(state === 'ready' || state === 'play') && (
+        <>
+          <div className={'wave-strip' + (state === 'play' ? ' playing' : '')} style={{ marginTop: 12, height: 40 }}>{waveHeights(character.id.length + 5, 56).map((h,k)=><span key={k} style={{height:h+'%'}}></span>)}</div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+            <button className="btn btn-small" onClick={play}>{state === 'play' ? 'â¹ Playing…' : 'â–¶ Play'}</button>
+            <button className="btn btn-small btn-ghost" onClick={run}>Regenerate</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* =============================================================
+   LIBRARY ” poster/episode cards grouped by show
+============================================================= */
+function Library({ projects, setProjects, onPlay, pushToast, onGoStudio }) {
+  const [q, setQ] = useState('');
+  const posterRef = useRef(null);
+  const [posterTarget, setPosterTarget] = useState(null);
+
+  const setPoster = (e) => {
+    const f = e.target.files?.[0]; if (!f || !posterTarget) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const { projId, epId } = posterTarget;
+      setProjects(prev => prev.map(p => p.id === projId ? { ...p, episodes: p.episodes.map(ep => ep.id === epId ? { ...ep, thumb: ev.target.result } : ep) } : p));
+      pushToast({ kind: 'success', title: 'Poster updated' });
+    };
+    reader.readAsDataURL(f); e.target.value = '';
+  };
+
+  const filtered = projects
+    .map(p => ({ ...p, eps: p.episodes.filter(e => !q || (p.title + ' ' + e.label + ' ' + e.name).toLowerCase().includes(q.toLowerCase())) }))
+    .filter(p => p.eps.length);
+
+  const remove = (projId, epId) => {
+    setProjects(prev => prev.map(p => p.id === projId ? { ...p, episodes: p.episodes.map(e => e.id === epId ? { ...e, status: 'empty', thumb: null, outputPath: null } : e) } : p));
+    pushToast({ kind: 'info', title: 'Removed from library' });
+  };
+
+  return (
+    <>
+      <input ref={posterRef} type="file" accept="image/*" hidden onChange={setPoster} />
+      <div className="page-head">
+        <div>
+          <div className="eyebrow">Archive</div>
+          <h2 className="page-title">Library</h2>
+          <div className="page-sub">Every show is a shelf of episode posters. Completed dubs land in <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono, monospace'}}>workspace/5_outputs/</code>; empty slots are episodes waiting to be dubbed.</div>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <Ico.search width="15" height="15" style={{ position: 'absolute', left: 12, top: 11, color: 'var(--ink-3)' }} />
+          <input className="input" placeholder="Search the archive…" value={q} onChange={(e) => setQ(e.target.value)} style={{ width: 280, paddingLeft: 34 }} />
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="empty">No episodes match “{q}”.</div>
+      ) : filtered.map(p => (
+        <div key={p.id} className="show-section">
+          <div className="show-section-head">
+            <h3>{p.title}</h3>
+            <span className="meta">{p.format} · {p.year || '”'} · {p.genres.join(', ') || 'No genres'} · {p.episodes.filter(e=>e.status==='complete').length}/{p.episodes.length} dubbed</span>
+          </div>
+          <div className="grid-3">
+            {p.eps.map(ep => ep.status === 'complete' ? (
+              <div key={ep.id} className="ep-card done">
+                <div className={'lib-thumb' + (ep.thumb ? ' has-img' : '')} data-letter={p.title[0]} style={ep.thumb ? { backgroundImage: `url(${ep.thumb})` } : null} onClick={() => onPlay({ title: `${p.title} ” ${ep.label}`, size: ep.size, date: ep.date, genres: p.genres })}>
+                  <div className="play-overlay"><div className="play-icon"><Ico.play width="20" height="20" style={{ marginLeft: 3 }} /></div></div>
+                  <div className="thumb-tags"><span className="thumb-tag">{ep.label}</span></div>
+                  <div className="lib-card-actions">
+                    <button className="icon-btn" onClick={(e) => { e.stopPropagation(); setPosterTarget({ projId: p.id, epId: ep.id }); posterRef.current?.click(); }} title="Set poster"><Ico.image width="14" height="14"/></button>
+                    <button className="icon-btn" onClick={(e) => { e.stopPropagation(); remove(p.id, ep.id); }} title="Remove"><Ico.trash width="14" height="14"/></button>
+                  </div>
+                </div>
+                <div className="ep-status-bar complete"><Ico.check width="13" height="13"/> English Dub Complete</div>
+                <div className="lib-meta" style={{ paddingBottom: 8 }}>
+                  <div className="lib-title">{ep.name}</div>
+                  <div className="lib-sub"><span>{fmtSize(ep.size || 0)}</span><span>·</span><span>{ep.date}</span></div>
+                </div>
+                <div className="ep-actions">
+                  <button className="btn btn-small" style={{ flex: 1 }} onClick={() => onPlay({ title: `${p.title} ” ${ep.label}`, size: ep.size, date: ep.date, genres: p.genres })}><Ico.play width="11" height="11" style={{ marginRight: 5, verticalAlign: -1 }}/>Preview</button>
+                  <button className="btn btn-small btn-ghost" title="Open folder"><Ico.folder width="13" height="13"/></button>
+                  <button className="btn btn-small btn-ghost" title="Open video"><Ico.film width="13" height="13"/></button>
+                </div>
+              </div>
+            ) : (
+              <div key={ep.id} className="ep-card empty">
+                <div className="add-card" style={{ aspectRatio: '16/9', minHeight: 0 }} onClick={onGoStudio}>
+                  <Ico.plus width="22" height="22" />
+                  <div style={{ fontSize: 12.5, letterSpacing: '0.06em' }}>{ep.label} ” not dubbed</div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)' }}>Dub it in the Studio</div>
+                </div>
+                <div className="lib-meta" style={{ paddingTop: 12 }}>
+                  <div className="lib-title" style={{ color: 'var(--ink-2)' }}>{ep.name}</div>
+                  <div className="lib-sub"><span>Empty slot</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
+/* =============================================================
+   SETTINGS ” Ollama / Whisper / paths only
+============================================================= */
+function Settings({ config, setConfig, pushToast, sysCheck }) {
+  const [revealH, setRevealH] = useState(false);
+  const upd = (patch) => setConfig(c => ({ ...c, ...patch }));
+  const save = () => pushToast({ kind: 'success', title: 'Settings saved', msg: 'config.json written' });
+
+  const tools = [
+    ['FFmpeg', sysCheck.ffmpeg], ['Demucs', sysCheck.demucs], ['faster-whisper', sysCheck.whisper],
+    ['pyannote', true], ['Ollama', sysCheck.ollama], ['IndexTTS-2', sysCheck.indextts], ['librosa', true],
+  ];
+
+  return (
+    <>
+      <div className="page-head">
+        <div>
+          <div className="eyebrow">Configuration</div>
+          <h2 className="page-title">Settings</h2>
+          <div className="page-sub">Saved to <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono, monospace'}}>config.json</code>. Everything runs locally ” no cloud TTS, no API spaces.</div>
+        </div>
+      </div>
+
+      <div className="grid-2" style={{ marginBottom: 20 }}>
+        <div className="panel">
+          <div className="panel-title">Ollama (Director LLM)</div>
+          <div className="field">
+            <div className="label">Ollama URL</div>
+            <input className="input" value={config.ollamaUrl} onChange={(e) => upd({ ollamaUrl: e.target.value })} />
+            <div className="help">Default http://localhost:11434 ” must be running before dubbing.</div>
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Model</div>
+            <input className="input" value={config.ollamaModel} onChange={(e) => upd({ ollamaModel: e.target.value })} />
+            <div className="help">e.g. llama3.1:8b ” <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>ollama pull llama3.1:8b</code></div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-title">Transcription &amp; Output</div>
+          <div className="field">
+            <div className="label">Whisper Model</div>
+            <input className="input" value={config.whisperModel} onChange={(e) => upd({ whisperModel: e.target.value })} placeholder="large-v3, medium, small" />
+            <div className="help">Larger = more accurate, slower. large-v3 recommended.</div>
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Output Directory</div>
+            <input className="input" value={config.outputDir} onChange={(e) => upd({ outputDir: e.target.value })} />
+          </div>
+        </div>
+      </div>
+
+      <div className="grid-2" style={{ marginBottom: 20 }}>
+        <div className="panel">
+          <div className="panel-title">IndexTTS-2 (Actor)</div>
+          <div className="field">
+            <div className="label">IndexTTS2 Directory</div>
+            <input className="input" value={config.indexttsDir} onChange={(e) => upd({ indexttsDir: e.target.value })} />
+            <div className="help">Holds <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>checkpoints/config.yaml</code></div>
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Conda Environment</div>
+            <input className="input" value={config.condaEnv} onChange={(e) => upd({ condaEnv: e.target.value })} />
+            <div className="help">Actor runs via <code style={{color:'var(--gold)',fontFamily:'JetBrains Mono,monospace'}}>conda run -n {config.condaEnv}</code></div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel-title">Diarization Token</div>
+          <div className="field" style={{ marginBottom: 0 }}>
+            <div className="label">Hugging Face Token <span style={{ color: 'var(--ink-3)', textTransform: 'none', letterSpacing: 0 }}>· pyannote only</span></div>
+            <div className="api-row">
+              <input className="input" type={revealH ? 'text' : 'password'} value={config.hfToken} onChange={(e) => upd({ hfToken: e.target.value })} />
+              <button className="reveal-btn" onClick={() => setRevealH(r => !r)}>{revealH ? 'Hide' : 'Reveal'}</button>
+            </div>
+            <div className="help">Used only to download the pyannote speaker-diarization model. Leave blank to put every line on SPEAKER_00.</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel" style={{ marginBottom: 20 }}>
+        <div className="panel-title">Full System Status</div>
+        <div className="checklist">
+          {tools.map(([name, ok]) => (
+            <div key={name} className={'checkitem' + (ok ? ' ok' : '')}>
+              <div className="checkitem-label">{name}</div>
+              <div className="checkitem-status">{ok ? 'READY' : 'MISSING'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+        <button className="btn btn-ghost">Reset</button>
+        <button className="btn btn-primary" onClick={save}>Save Settings</button>
+      </div>
+    </>
+  );
+}
+
+/* =============================================================
+   VIDEO MODAL + TOASTS
+============================================================= */
+function VideoModal({ video, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const src = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  return (
+    <div className="modal-veil" onClick={onClose}>
+      <div className="modal-head" onClick={(e) => e.stopPropagation()}>
+        <h3 className="modal-title">{video.title}</h3>
+        <button className="modal-close" onClick={onClose}><Ico.close width="16" height="16" /></button>
+      </div>
+      <video className="modal-video" controls autoPlay src={src} onClick={(e) => e.stopPropagation()}></video>
+      <div style={{ width: 'min(1100px, 90vw)', display: 'flex', gap: 16, marginTop: 12, color: 'var(--ink-3)', fontSize: 11.5, fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.06em' }}>
+        {video.size != null && <><span>{fmtSize(video.size)}</span><span>·</span></>}
+        {video.date && <><span>{video.date}</span><span>·</span></>}
+        <span style={{ color: 'var(--gold)' }}>dubbed · EN</span>
+        {video.genres && video.genres.length > 0 && <><span>·</span><span>{video.genres.join(' · ')}</span></>}
+      </div>
+    </div>
+  );
+}
+
+function Toasts({ toasts, onDismiss }) {
+  return (
+    <div className="toasts">
+      {toasts.map(t => {
+        const I = t.kind === 'success' ? Ico.check : t.kind === 'error' ? Ico.alert : Ico.info;
+        const color = t.kind === 'success' ? 'var(--good)' : t.kind === 'error' ? 'var(--bad)' : 'var(--info)';
+        return (
+          <div key={t.id} className={'toast ' + t.kind} onClick={() => onDismiss(t.id)}>
+            <I className="toast-ico" style={{ color }} />
+            <div style={{ flex: 1 }}>
+              <div className="toast-title">{t.title}</div>
+              {t.msg && <div className="toast-msg">{t.msg}</div>}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
+

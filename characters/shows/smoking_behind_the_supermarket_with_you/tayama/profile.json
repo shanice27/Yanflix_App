@@ -1,0 +1,40 @@
+{
+  "character": "tayama",
+  "show": "smoking_behind_the_supermarket_with_you",
+  "chroma_id": "smoking_behind_the_supermarket_with_you::tayama",
+  "seeds": [
+    {
+      "file": "seed_00.wav",
+      "mos": 5.0,
+      "duration": 2.27,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_099.wav"
+    },
+    {
+      "file": "seed_01.wav",
+      "mos": 5.0,
+      "duration": 2.35,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_117.wav"
+    },
+    {
+      "file": "seed_02.wav",
+      "mos": 5.0,
+      "duration": 2.3,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_120.wav"
+    },
+    {
+      "file": "seed_03.wav",
+      "mos": 5.0,
+      "duration": 2.88,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_123.wav"
+    },
+    {
+      "file": "seed_04.wav",
+      "mos": 5.0,
+      "duration": 2.88,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_124.wav"
+    }
+  ],
+  "scorer": "heuristic",
+  "harvested_at": "2026-06-13T20:14:18",
+  "bank_complete": false
+}

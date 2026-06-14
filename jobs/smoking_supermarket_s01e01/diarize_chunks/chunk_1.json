@@ -1,0 +1,306 @@
+{
+  "lines": [
+    {
+      "i": 50,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 51,
+      "c": "sasaki_male_lead",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 52,
+      "c": "sasaki_male_lead",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 53,
+      "c": "sasaki_male_lead",
+      "em": "sad",
+      "tp": "speech"
+    },
+    {
+      "i": 54,
+      "c": "sasaki_male_lead",
+      "em": "excited",
+      "tp": "speech"
+    },
+    {
+      "i": 55,
+      "c": "sasaki_male_lead",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 56,
+      "c": "yamada",
+      "em": "grateful",
+      "tp": "speech"
+    },
+    {
+      "i": 57,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 58,
+      "c": "sasaki_male_lead",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 59,
+      "c": "sasaki_male_lead",
+      "em": "sad",
+      "tp": "speech"
+    },
+    {
+      "i": 60,
+      "c": "sasaki_male_lead",
+      "em": "fearful",
+      "tp": "speech"
+    },
+    {
+      "i": 61,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 62,
+      "c": "tayama",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 63,
+      "c": "sasaki_male_lead",
+      "em": "excited",
+      "tp": "speech"
+    },
+    {
+      "i": 64,
+      "c": "sasaki_male_lead",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 65,
+      "c": "sasaki_male_lead",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 66,
+      "c": "sasaki_male_lead",
+      "em": "apologetic",
+      "tp": "speech"
+    },
+    {
+      "i": 67,
+      "c": "chief_male_supporting",
+      "em": "authoritative",
+      "tp": "speech"
+    },
+    {
+      "i": 68,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 69,
+      "c": "sasaki_male_lead",
+      "em": "sad",
+      "tp": "speech"
+    },
+    {
+      "i": 70,
+      "c": "sasaki_male_lead",
+      "em": "excited",
+      "tp": "speech"
+    },
+    {
+      "i": 71,
+      "c": "suzuki_male_supporting",
+      "em": "energetic",
+      "tp": "speech"
+    },
+    {
+      "i": 72,
+      "c": "chief_male_supporting",
+      "em": "authoritative",
+      "tp": "speech"
+    },
+    {
+      "i": 73,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 74,
+      "c": "suzuki_male_supporting",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 75,
+      "c": "chief_male_supporting",
+      "em": "authoritative",
+      "tp": "speech"
+    },
+    {
+      "i": 76,
+      "c": "sasaki_male_lead",
+      "em": "apologetic",
+      "tp": "speech"
+    },
+    {
+      "i": 77,
+      "c": "suzuki_male_supporting",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 78,
+      "c": "chief_male_supporting",
+      "em": "authoritative",
+      "tp": "speech"
+    },
+    {
+      "i": 79,
+      "c": "sasaki_male_lead",
+      "em": "sad",
+      "tp": "speech"
+    },
+    {
+      "i": 80,
+      "c": "suzuki_male_supporting",
+      "em": "energetic",
+      "tp": "speech"
+    },
+    {
+      "i": 81,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 82,
+      "c": "yamada",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 83,
+      "c": "tayama",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 84,
+      "c": "sasaki_male_lead",
+      "em": "excited",
+      "tp": "speech"
+    },
+    {
+      "i": 85,
+      "c": "suzuki_male_supporting",
+      "em": "energetic",
+      "tp": "speech"
+    },
+    {
+      "i": 86,
+      "c": "sasaki_male_lead",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 87,
+      "c": "yamada",
+      "em": "grateful",
+      "tp": "speech"
+    },
+    {
+      "i": 88,
+      "c": "tayama",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 89,
+      "c": "sasaki_male_lead",
+      "em": "sad",
+      "tp": "speech"
+    },
+    {
+      "i": 90,
+      "c": "suzuki_male_supporting",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 91,
+      "c": "tayama",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 92,
+      "c": "sasaki_male_lead",
+      "em": "neutral",
+      "tp": "speech"
+    },
+    {
+      "i": 93,
+      "c": "yamada",
+      "em": "cheerful",
+      "tp": "speech"
+    },
+    {
+      "i": 94,
+      "c": "suzuki_male_supporting",
+      "em": "energetic",
+      "tp": "speech"
+    },
+    {
+      "i": 95,
+      "c": "sasaki_male_lead",
+      "em": "excited",
+      "tp": "speech"
+    },
+    {
+      "i": 96,
+      "c": "tayama",
+      "em": "angry",
+      "tp": "speech"
+    },
+    {
+      "i": 97,
+      "c": "sasaki_male_lead",
+      "em": "fearful",
+      "tp": "speech"
+    },
+    {
+      "i": 98,
+      "c": "yamada",
+      "em": "whisper",
+      "tp": "speech"
+    },
+    {
+      "i": 99,
+      "c": "tayama",
+      "em": "cheerful",
+      "tp": "speech"
+    }
+  ],
+  "songs": [],
+  "saved_at": "2026-06-14T01:02:59.089Z"
+}

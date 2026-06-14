@@ -1,0 +1,186 @@
+{
+  "show_slug": "smoking_behind_the_supermarket_with_you",
+  "episode": "s01e01",
+  "source": "human_verified",
+  "note": "Scene context verified by watching the episode. Use this to resolve speaker ambiguity during diarization.",
+  "characters": [
+    {
+      "id": "sasaki_male_lead",
+      "gender": "male",
+      "role": "lead",
+      "description": "Office worker in his 30s. Quiet, introverted. Has a crush on Yamada. Most of his lines are internal monologue/thought bubbles."
+    },
+    {
+      "id": "yamada",
+      "gender": "female",
+      "role": "lead",
+      "description": "Supermarket cashier. Cheerful and bright on the register. Uses standard retail greetings: 'Welcome!', 'Thank you very much!', 'Spend all your money here!'"
+    },
+    {
+      "id": "tayama",
+      "gender": "female",
+      "role": "lead",
+      "alias_of": "yamada",
+      "description": "Yamada off-duty. Relaxed, dry, and candid — a completely different personality. Meets Sasaki to smoke behind the supermarket. Same voice as yamada."
+    },
+    {
+      "id": "suzuki_male_supporting",
+      "gender": "male",
+      "role": "supporting",
+      "description": "Sasaki's coworker and friend. Energetic, loud. Handles client calls at the office."
+    },
+    {
+      "id": "chief_male_supporting",
+      "gender": "male",
+      "role": "supporting",
+      "description": "Sasaki and Suzuki's boss. Authoritative. Announces meetings and reprimands Sasaki."
+    },
+    {
+      "id": "older_lady_clerk_female_supporting",
+      "gender": "female",
+      "role": "supporting",
+      "description": "Older female cashier at the supermarket who covers when Yamada is off shift. Cheerful and warm with customers."
+    },
+    {
+      "id": "office_worker_male_background",
+      "gender": "male",
+      "role": "background",
+      "description": "Unnamed male office worker. Briefly speaks with Suzuki around the 13-minute mark about the late meeting."
+    },
+    {
+      "id": "female_passerby_generic",
+      "gender": "female",
+      "role": "background",
+      "generic": true,
+      "description": "Two unnamed women who comment on Sasaki smoking near a no-smoking sign outside the supermarket. Use a generic female voice — no named character."
+    }
+  ],
+  "scenes": [
+    {
+      "timestamp": "0:00-1:28",
+      "location": "rooftop",
+      "speakers": ["suzuki_male_supporting", "sasaki_male_lead"],
+      "note": "Cold open. Suzuki finds Sasaki on the roof smoking before the intro song."
+    },
+    {
+      "timestamp": "1:28-2:57",
+      "location": "intro",
+      "speakers": ["zutomayo_female_singer"],
+      "note": "Intro song performed by Zutomayo."
+    },
+    {
+      "timestamp": "5:25-6:15",
+      "location": "supermarket_register",
+      "speakers": ["yamada"],
+      "note": "Yamada is at her register sending off a customer. Sasaki approaches her line."
+    },
+    {
+      "timestamp": "6:20-6:57",
+      "location": "sasaki_thoughts",
+      "speakers": ["sasaki_male_lead", "yamada"],
+      "note": "Sasaki internal monologue about gifting snacks. Yamada appears in a thought bubble: 'Thank you very much.'"
+    },
+    {
+      "timestamp": "7:00-7:42",
+      "location": "office",
+      "speakers": ["chief_male_supporting", "sasaki_male_lead", "suzuki_male_supporting"],
+      "note": "Chief yells at Sasaki for doing rounds. Sasaki apologizes. Suzuki joins to relay a client estimate request. Chief says he'll send it tomorrow. Suzuki confirms this loudly on the phone. Chief announces a 7PM department meeting."
+    },
+    {
+      "timestamp": "7:43-8:00",
+      "location": "office",
+      "speakers": ["sasaki_male_lead"],
+      "note": "Sasaki internal monologue — dejected after boss interaction, looking forward to seeing Yamada."
+    },
+    {
+      "timestamp": "8:02-8:44",
+      "location": "supermarket_then_outside",
+      "speakers": ["older_lady_clerk_female_supporting", "female_passerby_generic", "sasaki_male_lead"],
+      "note": "Older lady clerk is cheerfully working Yamada's register — Sasaki is disappointed. He goes outside to smoke. Two women pass by, see him near a no-smoking sign, and say nasty things. He thinks to himself while searching for a place to smoke."
+    },
+    {
+      "timestamp": "8:44-11:37",
+      "location": "behind_supermarket",
+      "speakers": ["tayama", "sasaki_male_lead"],
+      "note": "Tayama (Yamada off her shift) calls Sasaki over to smoke behind the supermarket. Extended conversation between them."
+    },
+    {
+      "timestamp": "11:38-12:50",
+      "location": "supermarket_register",
+      "speakers": ["sasaki_male_lead", "yamada", "tayama"],
+      "note": "Sasaki back in the store, lost in thought about Tayama. Yamada speaks to him at the register — he's flustered, she's cheerful. Tayama's voice intrudes on Sasaki's thoughts twice: once when he thinks of her, once when Yamada talks to herself after Sasaki leaves. Sasaki wonders how she knows his name."
+    },
+    {
+      "timestamp": "13:00-13:10",
+      "location": "office",
+      "speakers": ["office_worker_male_background", "suzuki_male_supporting"],
+      "note": "Background office worker comments to Suzuki that the meeting will run until midnight. Suzuki hopes someone acts up to ruin it. Office worker says he doesn't even know what a meeting is anymore."
+    },
+    {
+      "timestamp": "13:13-13:40",
+      "location": "office_hallway",
+      "speakers": ["sasaki_male_lead", "yamada", "tayama"],
+      "note": "Sasaki steps into the hallway, internal monologue. Thought bubble: Yamada says her register greeting. Then Tayama appears in thought bubble: 'He lines up at register two.'"
+    },
+    {
+      "timestamp": "14:10-15:05",
+      "location": "supermarket_register",
+      "speakers": ["sasaki_male_lead", "yamada"],
+      "note": "Sasaki returns to the supermarket hoping to see Yamada. She's there. He remembers she called him a fan. The memory echoes. She calls him to her line — normal transaction. He leaves to walk home."
+    },
+    {
+      "timestamp": "15:09-15:33",
+      "location": "street",
+      "speakers": ["sasaki_male_lead", "yamada"],
+      "note": "Sasaki walks home with internal monologue. Thought bubble of Yamada: 'Spend all your money here!'"
+    },
+    {
+      "timestamp": "15:35-16:21",
+      "location": "office",
+      "speakers": ["suzuki_male_supporting", "sasaki_male_lead"],
+      "note": "Suzuki sulks about a client not replying to his apology email and complains about sitting next to an old guy. Sasaki tells him to hush. Suzuki presses him about overtime."
+    },
+    {
+      "timestamp": "16:22-16:41",
+      "location": "office",
+      "speakers": ["sasaki_male_lead", "yamada", "tayama", "suzuki_male_supporting"],
+      "note": "Sasaki has back-to-back thought bubbles: Yamada 'Welcome!' then Tayama 'Hey, it's Mister Big Fan over here.' Startled out of his daydream, he shouts that he undid all his fixes. Suzuki matches his energy and shouts 'We're partying all night!'"
+    },
+    {
+      "timestamp": "16:44-16:58",
+      "location": "supermarket",
+      "speakers": ["sasaki_male_lead"],
+      "note": "Sasaki arrives at the supermarket — Yamada is not at her register. Older lady clerk is there instead. He leaves thinking to himself."
+    },
+    {
+      "timestamp": "16:58-19:54",
+      "location": "behind_supermarket",
+      "speakers": ["tayama", "sasaki_male_lead"],
+      "note": "Tayama calls Sasaki over to smoke behind the supermarket again. Extended conversation."
+    },
+    {
+      "timestamp": "19:55-21:08",
+      "location": "office_then_supermarket",
+      "speakers": ["suzuki_male_supporting", "sasaki_male_lead"],
+      "note": "Suzuki arrives at the office saying good morning. Sasaki is already at work. They talk. Sasaki returns to the supermarket — reaches for mochi chips, remembers Suzuki warning him not to come here, but picks them up anyway."
+    },
+    {
+      "timestamp": "21:15-21:56",
+      "location": "supermarket_register",
+      "speakers": ["yamada", "sasaki_male_lead"],
+      "note": "Yamada welcomes Sasaki and processes the transaction. She mentions she likes mochi chips. Sasaki remembers he gave Tayama the mochi chips and wonders if Tayama and Yamada are close friends. He imagines them sharing the chips."
+    },
+    {
+      "timestamp": "21:57-22:09",
+      "location": "supermarket",
+      "speakers": ["yamada", "older_lady_clerk_female_supporting", "tayama", "sasaki_male_lead"],
+      "note": "Yamada sneezes. Older lady clerk turns and asks if she has a fever. Yamada responds as Tayama: 'I think an old guy is daydreaming about me.' Then Sasaki sneezes."
+    },
+    {
+      "timestamp": "22:09-23:41",
+      "location": "outro",
+      "speakers": ["imase_male_singer"],
+      "note": "Outro song performed by Imase."
+    }
+  ]
+}

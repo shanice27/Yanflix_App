@@ -1,0 +1,10 @@
+{
+  "gemini_api_key": "",
+  "hf_token": "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",
+  "output_dir": "output",
+  "soni_path": "",
+  "default_src_lang": "ja",
+  "default_tgt_lang": "en",
+  "fish_mode": "Hugging Face Spaces (default)",
+  "fish_space": "fishaudio/fish-speech-1"
+}

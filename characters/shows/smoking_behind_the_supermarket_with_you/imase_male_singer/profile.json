@@ -1,0 +1,40 @@
+{
+  "character": "imase_male_singer",
+  "show": "smoking_behind_the_supermarket_with_you",
+  "chroma_id": "smoking_behind_the_supermarket_with_you::imase_male_singer",
+  "seeds": [
+    {
+      "file": "seed_00.wav",
+      "mos": 4.88,
+      "duration": 2.36,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_391.wav"
+    },
+    {
+      "file": "seed_01.wav",
+      "mos": 4.079,
+      "duration": 2.04,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_393.wav"
+    },
+    {
+      "file": "seed_02.wav",
+      "mos": 4.007,
+      "duration": 2.17,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_392.wav"
+    },
+    {
+      "file": "seed_03.wav",
+      "mos": 3.852,
+      "duration": 2.1,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_400.wav"
+    },
+    {
+      "file": "seed_04.wav",
+      "mos": 3.847,
+      "duration": 2.1,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_411.wav"
+    }
+  ],
+  "scorer": "heuristic",
+  "harvested_at": "2026-06-13T20:14:16",
+  "bank_complete": false
+}

@@ -1,0 +1,54 @@
+{
+  "character": "chief_male_supporting",
+  "show": "smoking_behind_the_supermarket_with_you",
+  "chroma_id": "smoking_behind_the_supermarket_with_you::chief_male_supporting",
+  "seeds": [
+    {
+      "file": "seed_00.wav",
+      "mos": 5.0,
+      "duration": 3.06,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_070.wav"
+    },
+    {
+      "file": "seed_01.wav",
+      "mos": 5.0,
+      "duration": 3.19,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_077.wav"
+    },
+    {
+      "file": "seed_02.wav",
+      "mos": 4.56,
+      "duration": 2.85,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_065.wav"
+    },
+    {
+      "file": "seed_03.wav",
+      "mos": 3.844,
+      "duration": 3.25,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_072.wav"
+    },
+    {
+      "file": "seed_04.wav",
+      "mos": 3.695,
+      "duration": 2.5,
+      "source": "C:\\Users\\shani\\OneDrive\\Desktop\\yanflix-dubbing-studio\\jobs\\smoking_supermarket_s01e01\\line_clips\\line_069.wav"
+    }
+  ],
+  "scorer": "heuristic",
+  "harvested_at": "2026-06-13T20:14:16",
+  "bank_complete": true,
+  "bank": {
+    "neutral": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_neutral.wav",
+    "cheerful": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_cheerful.wav",
+    "angry": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_angry.wav",
+    "sad": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_sad.wav",
+    "whisper": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_whisper.wav",
+    "exhausted": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_exhausted.wav",
+    "excited": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_excited.wav",
+    "fearful": "characters\\shows\\smoking_behind_the_supermarket_with_you\\chief_male_supporting\\ref_fearful.wav"
+  },
+  "bank_local": true,
+  "bank_errors": 0,
+  "cloned_at": "2026-06-13T20:59:02",
+  "method": "indextts2_local"
+}

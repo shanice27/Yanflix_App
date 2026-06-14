@@ -1,0 +1,7 @@
+{
+  "stage": "translate",
+  "status": "error",
+  "progress": 0,
+  "error": "result.map is not a function",
+  "updated_at": "2026-06-14T10:41:34.430Z"
+}
