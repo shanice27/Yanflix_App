@@ -27,17 +27,18 @@ fi
 # 3. Install handler deps
 pip install fastapi uvicorn boto3 -q
 
-# 4. Clone yanflix engine (or copy pod_synth_handler.py manually)
+# 4. Clone yanflix repo (uses YANFLIX_REPO env var, falls back to public GitHub)
+REPO="${YANFLIX_REPO:-https://github.com/shanice27/Yanflix_App}"
 if [ ! -d "/workspace/yanflix" ]; then
-  echo "WARNING: /workspace/yanflix not found."
-  echo "Upload engine/runpod/pod_synth_handler.py and engine/synthesis/synthesize_dub.py to /workspace/yanflix/"
-  echo "Or set YANFLIX_REPO env var and we'll git clone it."
-  if [ -n "$YANFLIX_REPO" ]; then
-    git clone "$YANFLIX_REPO" /workspace/yanflix
-  fi
+  echo "Cloning $REPO → /workspace/yanflix"
+  git clone "$REPO" /workspace/yanflix
+else
+  echo "Updating /workspace/yanflix"
+  git -C /workspace/yanflix pull --ff-only
 fi
 
-# 5. Start the handler
-echo "=== Starting Pod handler on port 8000 ==="
+# 5. Start the handler on port 8888 (pre-exposed by PyTorch template; no template edit needed)
+echo "=== Starting Pod handler on port 8888 ==="
+echo "Public URL: https://$(hostname)-8888.proxy.runpod.net"
 cd /workspace/yanflix
-python engine/runpod/pod_synth_handler.py --port 8000
+python engine/runpod/handler.py --port 8888
