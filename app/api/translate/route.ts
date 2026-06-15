@@ -4,9 +4,33 @@ import path from 'path';
 
 const GEMINI_MODEL = 'gemini-2.5-flash';
 const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GROQ_BASE    = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL   = 'llama-3.3-70b-versatile';
 
 function stripJsonFences(text: string): string {
   return text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+}
+
+async function groqRequest(prompt: string): Promise<any> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error('GROQ_API_KEY not set');
+  const res = await fetch(GROQ_BASE, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      temperature: 0.3,
+    }),
+    signal: AbortSignal.timeout(120_000),
+  });
+  if (res.status === 429) throw new Error('Groq 429: rate limited');
+  if (!res.ok) throw new Error(`Groq ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content;
+  if (!text) throw new Error('Empty response from Groq');
+  return JSON.parse(stripJsonFences(text));
 }
 
 async function geminiRequest(apiKey: string, prompt: string): Promise<any> {
@@ -140,16 +164,27 @@ No markdown. No preamble. Same length as input.`;
           let result: any[] | null = null;
           let lastErr: any = null;
 
-          // 1. Gemini key 1
+          // 1. Groq (fastest, highest priority)
           try {
-            result = toArray(await geminiRequest(geminiKey1, prompt));
-            console.log(`[translate] chunk ${ci+1} Gemini key1 succeeded`);
+            result = toArray(await groqRequest(prompt));
+            console.log(`[translate] chunk ${ci+1} Groq succeeded`);
           } catch (e) {
             lastErr = e;
-            console.warn(`[translate] chunk ${ci+1} Gemini key1 failed:`, (e as Error).message);
+            console.warn(`[translate] chunk ${ci+1} Groq failed:`, (e as Error).message);
           }
 
-          // 2. Gemini key 2 fallback
+          // 2. Gemini key 1
+          if (!result) {
+            try {
+              result = toArray(await geminiRequest(geminiKey1, prompt));
+              console.log(`[translate] chunk ${ci+1} Gemini key1 succeeded`);
+            } catch (e) {
+              lastErr = e;
+              console.warn(`[translate] chunk ${ci+1} Gemini key1 failed:`, (e as Error).message);
+            }
+          }
+
+          // 3. Gemini key 2
           if (!result && geminiKey2) {
             try {
               result = toArray(await geminiRequest(geminiKey2, prompt));
@@ -160,7 +195,7 @@ No markdown. No preamble. Same length as input.`;
             }
           }
 
-          // 3. Ollama
+          // 4. Ollama
           if (!result) {
             try {
               const ollamaRes = await fetch('http://localhost:11434/api/generate', {
