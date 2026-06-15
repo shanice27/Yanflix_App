@@ -9,9 +9,9 @@ Exposes:
 
 Setup on Pod:
   pip install fastapi uvicorn boto3 requests
-  git clone https://github.com/indexteam/IndexTTS2 /workspace/IndexTTS2
+  git clone https://github.com/index-tts/index-tts.git /workspace/IndexTTS2
   cd /workspace/IndexTTS2 && pip install -e .
-  python pod_synth_handler.py
+  python handler.py
 """
 
 import argparse

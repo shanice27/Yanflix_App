@@ -6,9 +6,9 @@ set -e
 
 echo "=== Yanflix Pod Setup ==="
 
-# 1. Clone IndexTTS2
+# 1. Clone IndexTTS2 (Bilibili IndexTTS Team — github.com/index-tts/index-tts)
 if [ ! -d "/workspace/IndexTTS2" ]; then
-  git clone https://github.com/index-tts/IndexTTS2 /workspace/IndexTTS2
+  git clone https://github.com/index-tts/index-tts.git /workspace/IndexTTS2
 fi
 cd /workspace/IndexTTS2
 pip install -e . -q
@@ -20,7 +20,7 @@ if [ ! -f "$CKPT_DIR/config.yaml" ]; then
   pip install huggingface_hub -q
   python -c "
 from huggingface_hub import snapshot_download
-snapshot_download('IndexTeam/IndexTTS2', local_dir='$CKPT_DIR')
+snapshot_download('IndexTeam/IndexTTS-2', local_dir='$CKPT_DIR')
 "
 fi
 
