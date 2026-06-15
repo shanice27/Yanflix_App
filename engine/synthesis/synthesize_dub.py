@@ -87,10 +87,17 @@ def find_ref_wav(char_dir: Path, emotion: str) -> Path | None:
 
 
 def locate_char_dir(characters_root: Path, show_name: str, character: str) -> Path | None:
-    """Check show dir first, then global_roster fallback."""
+    """Check show dir (exact then slug), then global_roster fallback."""
+    import re
+    # Try exact show name
     show_dir = characters_root / "shows" / show_name / character
     if show_dir.exists():
         return show_dir
+    # Try slugified show name (lowercase, spaces→underscores)
+    slug = re.sub(r"[^a-z0-9]+", "_", show_name.lower()).strip("_")
+    slug_dir = characters_root / "shows" / slug / character
+    if slug_dir.exists():
+        return slug_dir
     global_dir = characters_root / "global_roster" / character
     if global_dir.exists():
         return global_dir
@@ -107,15 +114,25 @@ def main():
     ap.add_argument("--job_dir",          required=True)
     ap.add_argument("--track_mode",       required=True, choices=["standard", "aave"])
     ap.add_argument("--characters_root",  default="characters")
+    ap.add_argument("--line_start",       type=int, default=None, help="First line_index to process (inclusive)")
+    ap.add_argument("--line_end",         type=int, default=None, help="Last line_index to process (inclusive)")
+    ap.add_argument("--worker_id",        type=int, default=0,    help="Worker index (for status file naming in parallel mode)")
     args = ap.parse_args()
 
     job_dir = Path(args.job_dir)
     track = args.track_mode
     chars_root = Path(args.characters_root)
+    line_start = args.line_start
+    line_end = args.line_end
+    worker_id = args.worker_id
+
+    # In parallel/worker mode write per-worker status; otherwise use the standard file
+    status_suffix = f"_w{worker_id}" if worker_id > 0 else ""
 
     write_status(job_dir, track, {
         "stage": f"synth_{track}", "status": "processing",
         "progress": 0, "error": None, "logs": [],
+        **({"worker_id": worker_id, "line_start": line_start, "line_end": line_end} if worker_id > 0 else {}),
     })
 
     # Acquire GPU lock
@@ -142,6 +159,8 @@ def main():
                 not isinstance(ln.get("audio_synthesis_status"), dict)
                 or ln["audio_synthesis_status"].get(track) != "done"
             )
+            and (line_start is None or ln.get("line_index", 0) >= line_start)
+            and (line_end   is None or ln.get("line_index", 0) <= line_end)
         ]
         total = len(todo)
         log(job_dir, track, f"{total} lines to synthesize for track={track}")

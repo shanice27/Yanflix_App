@@ -147,6 +147,133 @@ After diarize completes → open the Yanflix UI → go to Script Director → re
 
 ---
 
+## Session 2026-06-14/15 — WF1/WF2/WF3 Full Build & Test
+
+### Error 6 — n8n JS Task Runner crashing under load
+
+**Symptom:** WF1/WF2/WF3 executions (51–54) stuck at `translate=offline` despite translation completing. n8n executions showed nodes hanging indefinitely.
+
+**Root cause:** n8n's JS Task Runner (PID 45 in Docker) crashes under sustained load. Any Code node that uses `$json`, `$node`, or complex expressions sends work to this runner process. When it crashes, all Code nodes in all running workflows time out at 7200s then fail. The runner restarts but running executions are already broken.
+
+**Evidence:** Docker logs showed `Task execution timed out after 7200 seconds` for exec 44 (a Code node from the June 13 session). Runner crashed and never recovered for exec 51–54.
+
+**Fix:** Replaced ALL Code nodes with Set nodes across WF1, WF2, WF3 via n8n REST API (`PUT /api/v1/workflows/{id}`). Set nodes run in the main n8n process and do not use the task runner.
+- WF1 (4SimOolWRRLJfWIw): 5 Code nodes → Set nodes — 47→41 nodes
+- WF2 (vwHMSQh3MCE0B9GC): 4 Code nodes → Set nodes — 22→19 nodes  
+- WF3 (hwxXPnTES4N0Rofm): 7 Code nodes → Set nodes — 63→56 nodes
+
+---
+
+### Error 7 — n8n Wait nodes silently failing (SQLite DB timeouts)
+
+**Symptom:** Workflows would reach a Wait node and never resume, even after the wait interval expired.
+
+**Root cause:** n8n's Wait node (in `timeInterval` mode) uses SQLite to schedule its resume. The SQLite database was experiencing connection timeouts (`Error while saving insights metadata and raw data` flooding the logs). When the scheduler can't write to SQLite, the Wait node's wake-up is never registered and the execution hangs forever.
+
+**Fix:** Removed ALL Wait nodes from WF1/WF2/WF3. Connections that previously ran through a Wait node were rewired directly from the predecessor to the successor (the wait target). This required removing Wait node entries from BOTH the `nodes[]` array AND the `connections{}` dictionary in the workflow JSON before PUTting, otherwise n8n returned `400 — unknown_connection_source`.
+- WF1: 6 Wait nodes removed (isolate buffer, transcribe buffer, segment buffer, cast review buffer, harvest buffer, clone buffer)
+- WF2: 3 Wait nodes removed (diarize buffer 15s, cast review buffer 30s, translate buffer 10s)
+- WF3: 7 Wait nodes removed (translate buffer, intro song buffer, outro song buffer, GPU busy retry, synth buffer, fit buffer, render buffer)
+
+---
+
+### Error 8 — Translate route using Groq (paid, user-prohibited)
+
+**Symptom:** Translation was sending requests to Groq API despite the user explicitly requiring Groq not be used.
+
+**Root cause:** The original `app/api/translate/route.ts` had Groq as the PRIMARY LLM in the cascade, with Gemini as fallback.
+
+**Fix:** Removed entire Groq path. Cascade is now: Gemini key1 (`GEMINI_API_KEY`) → Gemini key2 (`GEMINI_API_KEY_2`) → Ollama (`llama3.1:8b`). Added `INTER_CHUNK_DELAY = 8000ms` between chunks to reduce 429s.
+
+---
+
+### Error 9 — Translate `toArray()` crashing on single-object LLM response
+
+**Symptom:** `[translate] chunk 4 error: LLM returned non-array: {"line_index":150,...}`
+
+**Root cause:** Gemini occasionally returns a single JSON object instead of a JSON array when the chunk has ambiguous structure or the model didn't follow the array instruction.
+
+**Fix:** Updated `toArray()` to detect a single object with `line_index` key and wrap it: `if (raw && typeof raw === 'object' && 'line_index' in raw) return [raw]`. Previously it threw immediately on any non-array response.
+
+---
+
+### Error 10 — `dub_song` returning 404 for episodes with no songs
+
+**Symptom:** WF3 would crash when it called `POST /api/dub_song` with `segment=intro` on an episode that has `songs: []` in `state_director.json`.
+
+**Root cause:** Episode 1 of "Smoking Behind the Supermarket with You" has no songs. The route returned 404 with `{ error: "Song segment 'intro' not found" }`, which n8n treated as a hard error and stopped the workflow.
+
+**Fix:** Route now detects missing song segment and writes a `done/skipped` status file instead of returning 404. Returns `{ status: "done", skipped: true }` so WF3 continues cleanly. Also pre-wrote `status_song_intro.json` and `status_song_outro.json` as done in the job directory.
+
+---
+
+### Error 11 — `synthesize_dub.py` can't find character directories
+
+**Symptom:** Synthesis would fail with `FileNotFoundError: No character dir for 'suzuki_male_supporting' in show 'Smoking Behind the Supermarket with You'`.
+
+**Root cause:** `state_director.json` stores `show_name: "Smoking Behind the Supermarket with You"` (full display name) but character directories are organized under the slugified form: `characters/shows/smoking_behind_the_supermarket_with_you/`.
+
+**Fix:** Updated `locate_char_dir()` in `engine/synthesis/synthesize_dub.py` to try slugified show name as a fallback after exact match fails: `slug = re.sub(r"[^a-z0-9]+", "_", show_name.lower()).strip("_")`.
+
+---
+
+### Error 12 — Song status showing "offline" despite status files existing
+
+**Symptom:** `/api/status?ep_folder=smoking_supermarket_s01e01` returned `status_song_intro: "offline"` even though `status_song_intro.json` existed on disk with `status: "done"`.
+
+**Root cause:** PowerShell 5.1's default file write encoding is UTF-16 LE with BOM. Even `[System.IO.File]::WriteAllText(..., [System.Text.Encoding]::UTF8)` writes a BOM in .NET 4. `JSON.parse` throws a `SyntaxError` when the first character is `﻿`, `readJson()` returns `null`, and `null?.status ?? 'offline'` becomes `"offline"`.
+
+**Fix (two-part):**
+1. `app/api/status/route.ts` — `readJson()` now strips BOM before parsing: `if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1)`
+2. Song status files rewritten using `[System.Text.UTF8Encoding]::new($false)` (BOM-free UTF-8) in PowerShell
+
+---
+
+### Error 13 — WF3 exec 55 completed "success" without triggering synthesis
+
+**Symptom:** WF3 webhook returned `{"message":"Workflow was started"}`, exec 55 showed `status: "success", finished: true`, but `status_synth_standard.json` was never created and `jobs/gpu.lock` remained free.
+
+**Root cause:** Unknown — n8n's SQLite save failure means exec 55 node data is `[]` (empty). Cannot determine which branch the workflow took. Likely the workflow ran through initial status checks and exited on an early-done path, or the HTTP request to `/api/synth-standard` was never made.
+
+**Workaround:** Triggered synthesis directly via API, bypassing n8n:
+```
+POST http://localhost:3000/api/synth-standard
+{"ep_folder": "smoking_supermarket_s01e01"}
+```
+IndexTTS2 confirmed running at 07:30:10 — model loaded, synthesizing line 000 onward.
+
+---
+
+### Error 14 — `synth-standard` route uses `conda run -n sonitr` (exec, not detached spawn)
+
+**Note for future:** The route uses `exec()` which buffers all stdout/stderr until process exit. For a 3-4 hour synthesis job this means no streaming logs to the console. The status file is updated after EVERY line (by `synthesize_dub.py` directly) so progress is trackable via `/api/status`, but the Node.js `exec` callback won't fire until synthesis fully completes.
+
+---
+
+## Stage Tracker — smoking_supermarket_s01e01 (2026-06-15)
+
+```
+WF0 - Source check   - ✅ DONE    bypass path used
+WF1 - Isolate        - ✅ DONE    vocals.wav 251MB
+WF1 - Transcribe     - ✅ DONE    state_whisper.json (422 segments, ja)
+WF1 - Segment Lines  - ✅ DONE    422 WAV line clips
+WF1 - Cast Review    - ✅ DONE    cast_locked=true
+WF1 - Harvest Seeds  - ✅ DONE
+WF1 - Clone Speakers - ✅ DONE
+WF2 - Diarize        - ✅ DONE
+WF2 - Translate      - ✅ DONE    410/410 lines merged, 0 missed (23:37:42)
+WF3 - Song intro     - ✅ DONE    skipped (no songs in episode)
+WF3 - Song outro     - ✅ DONE    skipped (no songs in episode)
+WF3 - Synth standard - 🔄 RUNNING IndexTTS2 active, ~3-4h remaining
+WF3 - Synth AAVE     - ⏳ PENDING
+WF3 - Fit standard   - ⏳ PENDING
+WF3 - Fit AAVE       - ⏳ PENDING
+WF3 - Render standard- ⏳ PENDING
+WF3 - Render AAVE    - ⏳ PENDING
+```
+
+---
+
 ## Architecture Fix — WF1 Cast-Lock Pause (2026-06-13)
 
 **Problem:** WF1 ran straight through: Segment Lines → Harvest Seeds → Clone Speakers. Harvest Seeds groups clips by character name — but characters aren't assigned until WF2 (diarize → human cast review → save_cast). Running harvest before cast lock means it has no names to group by.

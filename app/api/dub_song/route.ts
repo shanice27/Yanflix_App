@@ -36,7 +36,12 @@ export async function POST(request: Request) {
     const songEntry = (state.songs || []).find((s: any) => s.segment === segment);
 
     if (!songEntry) {
-      return NextResponse.json({ error: `Song segment '${segment}' not found` }, { status: 404 });
+      // No song segment in this episode — mark as done so WF3 can continue
+      writeStatus(ep_folder, segment, {
+        stage: `song_${segment}`, status: 'done', progress: 100,
+        skipped: true, reason: 'no_song_segment',
+      });
+      return NextResponse.json({ status: 'done', ep_folder, segment, skipped: true });
     }
 
     // Check cache first (Mode 1 — series recurring songs)

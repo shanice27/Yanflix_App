@@ -2,37 +2,15 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-const GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
-const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const GROQ_BASE   = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL  = 'llama-3.3-70b-versatile';
+const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 function stripJsonFences(text: string): string {
   return text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
 }
 
-async function groqRequest(apiKey: string, prompt: string): Promise<any> {
-  const res = await fetch(GROQ_BASE, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: GROQ_MODEL,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.1,
-      response_format: { type: 'json_object' },
-      max_tokens: 32768,
-    }),
-  });
-  if (res.status === 429) throw new Error('Groq 429: rate limited');
-  if (!res.ok) throw new Error(`Groq ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = await res.json();
-  const text = data.choices?.[0]?.message?.content;
-  if (!text) throw new Error('Empty response from Groq');
-  return JSON.parse(stripJsonFences(text));
-}
-
-async function geminiRequest(model: string, apiKey: string, prompt: string): Promise<any> {
-  const url = `${GEMINI_BASE}/${model}:generateContent`;
+async function geminiRequest(apiKey: string, prompt: string): Promise<any> {
+  const url = `${GEMINI_BASE}/${GEMINI_MODEL}:generateContent`;
   const body = JSON.stringify({
     contents: [{ parts: [{ text: prompt }] }],
     generationConfig: { responseMimeType: 'application/json' },
@@ -46,7 +24,7 @@ async function geminiRequest(model: string, apiKey: string, prompt: string): Pro
     });
     if (res.status === 429) {
       if (attempt < delays.length) {
-        console.warn(`[translate] 429 rate limit on ${model} — waiting ${delays[attempt]/1000}s`);
+        console.warn(`[translate] 429 rate limit on ${GEMINI_MODEL} — waiting ${delays[attempt]/1000}s`);
         await new Promise(r => setTimeout(r, delays[attempt]));
         continue;
       }
@@ -54,11 +32,11 @@ async function geminiRequest(model: string, apiKey: string, prompt: string): Pro
     }
     if (!res.ok) {
       const txt = await res.text();
-      throw new Error(`Gemini ${model} ${res.status}: ${txt.slice(0, 200)}`);
+      throw new Error(`Gemini ${GEMINI_MODEL} ${res.status}: ${txt.slice(0, 200)}`);
     }
     const data = await res.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error(`Empty response from ${model}`);
+    if (!text) throw new Error(`Empty response from ${GEMINI_MODEL}`);
     return JSON.parse(stripJsonFences(text));
   }
 }
@@ -91,8 +69,20 @@ export async function POST(request: Request) {
     const promptPath = path.resolve('./prompts/02_dual_translation.md');
     const systemPrompt = fs.existsSync(promptPath) ? fs.readFileSync(promptPath, 'utf-8') : '';
 
-    const groqKey = process.env.GROQ_API_KEY || '';
-    const toArray = (raw: any) => Array.isArray(raw) ? raw : (raw?.lines ?? raw?.translations ?? raw);
+    const geminiKey1 = apiKey;
+    const geminiKey2 = process.env.GEMINI_API_KEY_2 || '';
+    const toArray = (raw: any): any[] => {
+      if (Array.isArray(raw)) return raw;
+      for (const key of ['lines', 'translations', 'results', 'data', 'items', 'output']) {
+        if (Array.isArray(raw?.[key])) return raw[key];
+      }
+      // Single object with translation fields — wrap it
+      if (raw && typeof raw === 'object' && 'line_index' in raw) {
+        console.warn('[translate] LLM returned single object; wrapping as single-item array');
+        return [raw];
+      }
+      throw new Error(`LLM returned non-array: ${JSON.stringify(raw).slice(0, 200)}`);
+    };
 
     const CHUNK_SIZE = 50;
     const INTER_CHUNK_DELAY = 8000; // 8s between chunks to avoid rate limits
@@ -150,26 +140,23 @@ No markdown. No preamble. Same length as input.`;
           let result: any[] | null = null;
           let lastErr: any = null;
 
-          // 1. Groq
-          if (groqKey) {
-            try {
-              result = toArray(await groqRequest(groqKey, prompt));
-              console.log(`[translate] chunk ${ci+1} Groq succeeded`);
-            } catch (e) {
-              lastErr = e;
-              console.warn(`[translate] chunk ${ci+1} Groq failed:`, (e as Error).message);
-            }
+          // 1. Gemini key 1
+          try {
+            result = toArray(await geminiRequest(geminiKey1, prompt));
+            console.log(`[translate] chunk ${ci+1} Gemini key1 succeeded`);
+          } catch (e) {
+            lastErr = e;
+            console.warn(`[translate] chunk ${ci+1} Gemini key1 failed:`, (e as Error).message);
           }
 
-          // 2. Gemini fallbacks
-          for (let m = 0; m < GEMINI_MODELS.length && !result; m++) {
-            if (m > 0) await new Promise(r => setTimeout(r, 35000));
+          // 2. Gemini key 2 fallback
+          if (!result && geminiKey2) {
             try {
-              result = toArray(await geminiRequest(GEMINI_MODELS[m], apiKey, prompt));
-              console.log(`[translate] chunk ${ci+1} ${GEMINI_MODELS[m]} succeeded`);
+              result = toArray(await geminiRequest(geminiKey2, prompt));
+              console.log(`[translate] chunk ${ci+1} Gemini key2 succeeded`);
             } catch (e) {
               lastErr = e;
-              console.warn(`[translate] chunk ${ci+1} ${GEMINI_MODELS[m]} failed:`, (e as Error).message);
+              console.warn(`[translate] chunk ${ci+1} Gemini key2 failed:`, (e as Error).message);
             }
           }
 

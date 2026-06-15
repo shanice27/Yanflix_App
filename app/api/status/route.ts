@@ -8,6 +8,7 @@ const STAGE_FILES: Record<string, string> = {
   status_transcribe:      'status_transcribe.json',
   status_segment:         'status_segment.json',
   status_diarize:         'status_diarize.json',
+  status_cast:            'status_cast.json',
   status_harvest:         'status_harvest.json',
   status_clone:           'status_clone.json',
   status_translate:       'status_translate.json',
@@ -23,12 +24,136 @@ const STAGE_FILES: Record<string, string> = {
 
 function readJson(p: string): any {
   if (!fs.existsSync(p)) return null;
-  try { return JSON.parse(fs.readFileSync(p, 'utf-8')); } catch { return null; }
+  try {
+    let text = fs.readFileSync(p, 'utf-8');
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    return JSON.parse(text);
+  } catch { return null; }
+}
+
+function listFilesSafe(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+  try {
+    return fs.readdirSync(dir);
+  } catch {
+    return [];
+  }
+}
+
+function statSafe(p: string): fs.Stats | null {
+  try {
+    return fs.statSync(p);
+  } catch {
+    return null;
+  }
+}
+
+function pickBestSourceFile(options: {
+  dir: string;
+  ep_folder: string;
+  candidates: string[];
+}) {
+  // Prefer: exact ep_folder prefix matches, then newest mtime
+  const { dir, ep_folder, candidates } = options;
+  if (candidates.length === 0) return null;
+
+  const scored = candidates
+    .map((filename) => {
+      const fullPath = path.join(dir, filename);
+      const st = statSafe(fullPath);
+      const mtimeMs = st?.mtimeMs ?? 0;
+      const lower = filename.toLowerCase();
+      const epLower = ep_folder.toLowerCase();
+
+      const exactPrefix = lower.startsWith(epLower + '.');
+      const exactName = lower.startsWith(epLower + '_');
+      const sameStem = lower.startsWith(epLower);
+
+      const extBonus = ['.mp4', '.mkv', '.mov', '.webm'].some((e) => lower.endsWith(e)) ? 5000 : 0;
+      const nameBonus = (exactPrefix ? 4000 : 0) + (exactName ? 3000 : 0) + (sameStem ? 1000 : 0);
+
+      return {
+        filename,
+        fullPath,
+        score: nameBonus + extBonus + mtimeMs / 1_000_000,
+        mtimeMs,
+      };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored[0] || null;
+}
+
+function discoverSourceFile(ep_folder: string): { filename?: string } {
+  const VIDEO_AUDIO_EXTS = new Set([
+    '.mp4',
+    '.mkv',
+    '.webm',
+    '.mov',
+    '.mp3',
+    '.wav',
+    '.m4a',
+    '.aac',
+    '.flac',
+    '.ogg',
+  ]);
+
+  // Best-guess common per-episode folders.
+  // Add/remove these without touching UI: UI just needs { filename }.
+  const candidateDirs = [
+    path.resolve(`./workspace/uploads_tmp`),
+    path.resolve(`./workspace/sources/${ep_folder}`),
+    path.resolve(`./workspace/1_sources/${ep_folder}`),
+    path.resolve(`./workspace/0_inputs/${ep_folder}`),
+    path.resolve(`./jobs/${ep_folder}`),
+    path.resolve(`./workspace/${ep_folder}`),
+    path.resolve(`./workspace/${ep_folder}/stage_01_harvest`),
+  ];
+
+  let best: { filename: string; fullPath?: string; score: number } | null = null;
+
+  for (const dir of candidateDirs) {
+    const files = listFilesSafe(dir);
+    const mediaFiles = files.filter((f) => {
+      const ext = path.extname(f).toLowerCase();
+      return VIDEO_AUDIO_EXTS.has(ext);
+    });
+    if (mediaFiles.length === 0) continue;
+
+    const chosen = pickBestSourceFile({ dir, ep_folder, candidates: mediaFiles });
+    if (!chosen) continue;
+
+    const chosenStat = statSafe(path.join(dir, chosen.filename));
+    const mtimeMs = chosenStat?.mtimeMs ?? 0;
+
+    // Keep best across directories (using the same scoring heuristic).
+    // We approximate score from filename (prefix match) + extension + newest mtime.
+    const lower = chosen.filename.toLowerCase();
+    const epLower = ep_folder.toLowerCase();
+    const exactPrefix = lower.startsWith(epLower + '.');
+    const exactName = lower.startsWith(epLower + '_');
+    const sameStem = lower.startsWith(epLower);
+
+    const extBonus = ['.mp4', '.mkv', '.mov', '.webm'].some((e) => lower.endsWith(e)) ? 5000 : 0;
+    const nameBonus = (exactPrefix ? 4000 : 0) + (exactName ? 3000 : 0) + (sameStem ? 1000 : 0);
+
+    const score = nameBonus + extBonus + mtimeMs / 1_000_000;
+
+    if (!best || score > best.score) {
+      best = { filename: chosen.filename, fullPath: chosen.fullPath, score };
+    }
+  }
+
+  return best ? { filename: best.filename } : {};
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const ep_folder = (searchParams.get('ep_folder') || '').trim();
+
+  // --- Optional: auto-discover source asset for Source Media stage ---
+  // Discover early so the rest of the function can simply attach result.filename
+  const discovered = ep_folder ? discoverSourceFile(ep_folder) : {};
 
   // --- GPU lock holder ---
   const gpuLockPath = path.resolve('./jobs/gpu.lock');
@@ -48,8 +173,16 @@ export async function GET(request: Request) {
     });
   }
 
-  const jobDir = path.resolve(`./jobs/${ep_folder}`);
+  const jobBase = path.resolve(`./jobs/${ep_folder}`);
+  // Status files may live directly in jobDir or in a /status/ subfolder
+  const statusSubdir = path.join(jobBase, 'status');
+  const jobDir = fs.existsSync(statusSubdir) ? statusSubdir : jobBase;
   const result: Record<string, any> = { ep_folder, gpu_lock_holder };
+
+  // UI expects res.filename for auto-linking the Source Media stage
+  if (discovered && (discovered as any).filename) {
+    result.filename = (discovered as any).filename;
+  }
 
   // --- Read each stage status file ---
   for (const [key, filename] of Object.entries(STAGE_FILES)) {
