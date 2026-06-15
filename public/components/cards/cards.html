@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cards</title>
+<script src="image-slot.js"></script>
+<style>
+  :root {
+    --bg: #141417;
+    --text: #ffffff;
+    --muted: #8a8a92;
+    --red: #ef1d2b;
+    --gold: #f5b50a;
+    --slot: #1f1f24;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 48px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+    gap: 34px 26px;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* poster: borderless thumbnail, 2:3 */
+  .card image-slot {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    background: var(--slot);
+    display: block;
+  }
+
+  .card .title {
+    margin: 14px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 9px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .year { font-weight: 500; }
+
+  .meta .spacer { flex: 1; }
+
+  .icon-btn {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    transition: color 0.16s ease, transform 0.12s ease;
+  }
+  .icon-btn:active { transform: scale(0.86); }
+  .icon-btn svg { width: 16px; height: 16px; display: block; }
+
+  /* favorite */
+  .icon-btn.fav.on { color: var(--red); }
+  .icon-btn.fav.on svg { fill: var(--red); stroke: var(--red); }
+  /* viewed */
+  .icon-btn.eye.on { color: #fff; }
+
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #cfcfd4;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .rating svg { width: 15px; height: 15px; fill: var(--gold); display: block; }
+</style>
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+
+  <template id="card-tpl">
+    <div class="card">
+      <image-slot shape="rounded" radius="6" placeholder="Drop poster"></image-slot>
+      <p class="title"></p>
+      <div class="meta">
+        <span class="year"></span>
+        <button class="icon-btn fav" title="Favorite" aria-label="Favorite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        </button>
+        <button class="icon-btn eye" title="Viewed" aria-label="Viewed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7.5 11-7.5S23 12 23 12s-4 7.5-11 7.5S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <span class="spacer"></span>
+        <span class="rating">
+          <svg viewBox="0 0 24 24"><path d="M12 2l2.95 6.06 6.55.95-4.75 4.62 1.12 6.52L12 17.6 6.13 20.7l1.12-6.52L2.5 9.01l6.55-.95z"/></svg>
+          <span class="score"></span>
+        </span>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    var MOVIES = [
+      { id: "money-heist",  title: "Money Heist: Season 2",  year: 2018, rating: "5.8", fav: true,  viewed: false },
+      { id: "star-trek",    title: "Star Trek - Discovery",  year: 2018, rating: "9.5", fav: false, viewed: true  },
+      { id: "13-reasons",   title: "13 Reasons why",         year: 2018, rating: "8.1", fav: true,  viewed: false },
+      { id: "sextuples",    title: "Sextuples",              year: 2018, rating: "5.8", fav: false, viewed: false },
+      { id: "hyperdrive",   title: "Hyperdrive",             year: 2018, rating: "7.3", fav: false, viewed: true  },
+      { id: "dave-c",       title: "Dave Chappelle Sticks…", year: 2018, rating: "6.1", fav: true,  viewed: false }
+    ];
+
+    var grid = document.getElementById("grid");
+    var tpl = document.getElementById("card-tpl");
+
+    MOVIES.forEach(function (m) {
+      var node = tpl.content.cloneNode(true);
+      node.querySelector("image-slot").id = "poster-" + m.id;
+      node.querySelector("image-slot").setAttribute("placeholder", m.title);
+      node.querySelector(".title").textContent = m.title;
+      node.querySelector(".year").textContent = m.year;
+      node.querySelector(".score").textContent = m.rating;
+
+      var fav = node.querySelector(".fav");
+      var eye = node.querySelector(".eye");
+      if (m.fav) fav.classList.add("on");
+      if (m.viewed) eye.classList.add("on");
+      fav.addEventListener("click", function () { fav.classList.toggle("on"); });
+      eye.addEventListener("click", function () { eye.classList.toggle("on"); });
+
+      grid.appendChild(node);
+    });
+  </script>
+</body>
+</html>

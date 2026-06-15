@@ -8,7 +8,7 @@ export async function GET() {
 
   // Load first 50 segments and build a realistic diarize prompt
   try {
-    const whisperPath = path.resolve('./jobs/smoking_supermarket_s01e01/state_whisper.json');
+    const whisperPath = path.resolve('./jobs/smoking_supermarket/s01/e01/states/state_whisper.json');
     const segs: any[] = JSON.parse(fs.readFileSync(whisperPath, 'utf-8')).slice(0, 50);
     const chunk = segs.map((s, i) => ({ i: s.id ?? i, s: Math.round(s.start * 10) / 10, e: Math.round(s.end * 10) / 10, t: s.text }));
     const prompt = `Assign speaker names and emotions to these ${chunk.length} lines from a Japanese show. Return JSON: {"lines":[{"i":0,"c":"Character","em":"neutral","tp":"speech"}...],"songs":[]}. Each "lines" entry maps to one input line. Input: ${JSON.stringify(chunk)}`;

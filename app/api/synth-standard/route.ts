@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `GPU locked by: ${holder}` }, { status: 409 });
     }
 
-    const scriptPath = path.resolve('./python_backend/synthesize_dub.py');
+    const scriptPath = path.resolve('./engine/synthesis/synthesize_dub.py');
     const cmd = [
       `conda run -n sonitr python "${scriptPath}"`,
       `--job_dir "${jobDir}"`,

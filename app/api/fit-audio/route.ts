@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/audio_fitter.py'),
+        'python', path.resolve('./engine/audio/audio_fitter.py'),
         '--job_dir', jobDir,
         '--track_mode', track_mode,
         '--min_rate', String(minRate),

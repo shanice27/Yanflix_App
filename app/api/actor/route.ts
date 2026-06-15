@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/synthesize_dub.py'),
+        'python', path.resolve('./engine/synthesis/synthesize_dub.py'),
         '--job_dir', jobDir,
         '--track_mode', track_mode,
         '--characters_root', charsRoot,

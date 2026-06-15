@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/isolate.py'),
+        'python', path.resolve('./engine/audio/isolate.py'),
         '--video', filePath,
         '--ep', ep_folder,
         '--output_dir', path.resolve('./workspace/2_isolated'),

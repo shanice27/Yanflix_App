@@ -1,1 +1,0 @@
-"""Yanflix app package."""

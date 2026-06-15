@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       bootstrapDirectorFromWhisper(stateWhisper, stateDirector, ep_folder);
     }
 
-    const scriptPath = path.resolve('./python_backend/segment_lines.py');
+    const scriptPath = path.resolve('./engine/transcription/segment_lines.py');
     const cmd = [
       `conda run -n dubbing python "${scriptPath}"`,
       `--job_dir "${jobDir}"`,

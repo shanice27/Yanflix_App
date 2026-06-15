@@ -1,0 +1,88 @@
+/* ==========================================================================
+   🍿 YANFLIX BUTTON COMPONENTS — NETFLIX-INSPIRED PILL STYLE
+   ========================================================================== */
+
+.btn {
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(30, 30, 50, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ece9e0;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: all 150ms ease;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  appearance: none;
+  text-decoration: none;
+}
+
+.btn:hover { 
+  background: rgba(255,255,255,0.12); 
+  border-color: rgba(255,255,255,0.35); 
+  color: #fff; 
+}
+
+.btn:disabled { 
+  opacity: 0.38; 
+  cursor: not-allowed; 
+}
+
+/* Filled red — primary action (Watch, Load, Begin) */
+.btn-primary {
+  background: #c8102e;
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 16px -4px rgba(200,16,46,0.55);
+}
+
+.btn-primary:hover { 
+  background: #e5122f; 
+  border-color: transparent; 
+  color: #fff; 
+  box-shadow: 0 6px 20px -4px rgba(200,16,46,0.6); 
+}
+
+/* Filled gold — highlight action */
+.btn-gold {
+  background: #d4af37;
+  border-color: transparent;
+  color: #1a1405;
+  font-weight: 600;
+}
+
+.btn-gold:hover { 
+  background: #e0bc40; 
+  border-color: transparent; 
+  color: #1a1405; 
+}
+
+/* Outlined ghost — secondary action (Add to List, Cancel) */
+.btn-ghost {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+  color: #b8b3a4;
+}
+
+.btn-ghost:hover { 
+  background: rgba(255,255,255,0.12); 
+  border-color: rgba(255,255,255,0.3); 
+  color: #fff; 
+}
+
+/* Size modifier */
+.btn-small { 
+  padding: 5px 14px; 
+  font-size: 11.5px; 
+  border-radius: 16px; 
+}

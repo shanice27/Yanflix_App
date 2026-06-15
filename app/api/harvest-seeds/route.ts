@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Job folder not found — run isolate and transcribe first" }, { status: 400 });
     }
 
-    const scriptPath = path.resolve('./python_backend/harvest_voices.py');
+    const scriptPath = path.resolve('./engine/character_vault/harvest_voices.py');
     const cmd = [
       `conda run -n dubbing python "${scriptPath}"`,
       `--job_dir "${jobDir}"`,

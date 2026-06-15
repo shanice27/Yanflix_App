@@ -1,47 +1,21 @@
-# Environment / secrets
-.env
-.env.local
-.env.*.local
-
-# Next.js
+# System & Next.js cache directories
 .next/
-out/
-
-# Node
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-*.egg-info/
-dist/
+out/
 build/
-.venv/
-venv/
-chroma_data/
+.env*.local
 
-# Large binary/media files
-workspace/0_raw_videos/
-workspace/1_inputs/
-workspace/2_isolated/
-workspace/3_transcripts/
-workspace/4_cloned_cached/
-workspace/5_outputs/
+# Local Workspace Media Pipeline Files (Massive Assets)
+workspace/
+jobs/
+*.mp4
+*.mkv
+*.wav
+*.mp3
+*.m4a
+*.json-sidecar
+.image-slots.state.json
 
-# Audio assets (voice seeds, line clips, ref wavs)
-jobs/*/line_clips/
-characters/**/*.wav
-characters/**/*.m4a
-
-# TypeScript build info
-tsconfig.tsbuildinfo
-
-# OS
+# Operating System Trash
 .DS_Store
 Thumbs.db

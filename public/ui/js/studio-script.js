@@ -1,0 +1,1 @@
+/* Content consolidated safely inside app.js */

@@ -1,0 +1,130 @@
+/* ============ Buttons / controls — Yanflix ============ */
+
+/* ---- filter pills ---- */
+.pill-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.pill {
+  appearance: none; border: none; outline: none; cursor: pointer;
+  font-family: inherit; font-size: 13.5px; font-weight: 600; color: #fff;
+  background: var(--pill-off, #2b2b31); border-radius: 999px;
+  padding: 10px 22px; line-height: 1;
+  transition: background-color .18s ease, transform .12s ease;
+}
+.pill:hover { background: var(--ctrl-hover); }
+.pill:active { transform: translateY(1px); }
+.pill.selected { background: var(--red); }
+.pill.selected:hover { background: var(--red-hover); }
+
+/* ---- dropdown selects ---- */
+.select {
+  position: relative; display: inline-flex; align-items: center;
+}
+.select select {
+  appearance: none; -webkit-appearance: none;
+  font-family: inherit; font-size: 13px; font-weight: 600; color: #d7d7dc;
+  background: var(--ctrl); border: none; border-radius: var(--radius-sm);
+  padding: 9px 34px 9px 14px; cursor: pointer; outline: none;
+}
+.select::after {
+  content: ""; position: absolute; right: 13px; top: 50%;
+  width: 7px; height: 7px; border-right: 2px solid var(--muted-2);
+  border-bottom: 2px solid var(--muted-2); transform: translateY(-65%) rotate(45deg);
+  pointer-events: none;
+}
+
+/* ---- rating slider ---- */
+.rating-slider { display: flex; align-items: center; gap: 12px; min-width: 240px; }
+.rating-slider .star { width: 16px; height: 16px; fill: var(--gold); flex: none; }
+.rating-slider .val { font-size: 14px; font-weight: 600; color: #d7d7dc; font-variant-numeric: tabular-nums; min-width: 30px; }
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+  border-radius: 999px; background: var(--track); outline: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 15px; height: 15px;
+  border-radius: 50%; background: #fff; border: none; box-shadow: 0 1px 3px rgba(0,0,0,.55);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px; border-radius: 50%; background: #fff; border: none;
+}
+input[type="range"].gold { background: linear-gradient(90deg, var(--gold) 0 var(--p,60%), var(--track) var(--p,60%) 100%); }
+
+/* ---- transport (round icon cluster) ---- */
+.transport { display: flex; align-items: center; gap: 14px; }
+.tbtn {
+  appearance: none; border: none; cursor: pointer;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--ctrl); color: var(--muted-2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background-color .16s ease, color .16s ease, transform .12s ease;
+}
+.tbtn:hover { background: var(--ctrl-hover); color: #fff; }
+.tbtn:active { transform: scale(.92); }
+.tbtn svg { width: 17px; height: 17px; fill: currentColor; }
+.tbtn.play {
+  width: 54px; height: 54px; background: var(--red); color: #fff;
+  box-shadow: 0 6px 20px -6px rgba(239,29,43,.7);
+}
+.tbtn.play:hover { background: var(--red-hover); }
+.tbtn.play svg { width: 22px; height: 22px; }
+.tbtn.toggle.on { color: var(--gold); }
+.tbtn.rec.on { color: #fff; background: var(--red); animation: recpulse 1.3s ease-out infinite; }
+
+@keyframes recpulse {
+  0% { box-shadow: 0 0 0 0 rgba(239,29,43,.55); }
+  70% { box-shadow: 0 0 0 8px rgba(239,29,43,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,29,43,0); }
+}
+
+/* ---- progress bars ---- */
+.bar-row { display: flex; flex-direction: column; gap: 8px; }
+.bar-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; color: #cfcfd4; font-weight: 500; }
+.bar-head .pct { color: var(--muted); font-variant-numeric: tabular-nums; }
+.track {
+  position: relative; height: 6px; border-radius: 999px; background: var(--track); overflow: hidden;
+}
+.fill { position: absolute; inset: 0 auto 0 0; height: 100%; background: var(--red); border-radius: 999px; transition: width .5s cubic-bezier(.65,0,.35,1); }
+.fill.gold { background: var(--gold); }
+.fill.green { background: var(--green); }
+.track.indeterminate .fill { width: 34%; left: -34%; animation: slide 1.3s cubic-bezier(.65,.05,.35,.95) infinite; }
+@keyframes slide { 0% { left: -34%; } 60% { left: 100%; } 100% { left: 100%; } }
+
+/* ---- status chips ---- */
+.status {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--panel-2); border-radius: 999px; padding: 7px 14px 7px 12px;
+  font-size: 12.5px; font-weight: 600; color: #d7d7dc; line-height: 1; white-space: nowrap;
+}
+.status .led { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--muted); }
+.status.idle .led { background: var(--muted); }
+.status.queued .led { background: var(--gold); }
+.status.processing .led { background: var(--red); animation: recpulse 1.4s ease-out infinite; }
+.status.done .led { background: var(--green); }
+.status.failed .led { background: var(--red); }
+
+/* ---- primary / ghost buttons ---- */
+.btn {
+  appearance: none; border: none; cursor: pointer; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 14px; font-weight: 600; color: #fff;
+  background: var(--ctrl); border-radius: 999px; padding: 11px 20px; line-height: 1;
+  transition: background-color .16s ease, transform .12s ease;
+}
+.btn:hover { background: var(--ctrl-hover); }
+.btn:active { transform: translateY(1px); }
+.btn svg { width: 16px; height: 16px; fill: currentColor; }
+.btn.primary { background: var(--red); box-shadow: 0 6px 20px -8px rgba(239,29,43,.7); }
+.btn.primary:hover { background: var(--red-hover); }
+.btn.success { background: var(--green); }
+
+/* card meta icon buttons (heart / eye) */
+.icon-btn {
+  appearance: none; background: none; border: none; padding: 0; margin: 0; cursor: pointer;
+  display: inline-flex; align-items: center; color: var(--muted);
+  transition: color .16s ease, transform .12s ease;
+}
+.icon-btn:active { transform: scale(.86); }
+.icon-btn svg { width: 16px; height: 16px; display: block; }
+.icon-btn.fav.on { color: var(--red); }
+.icon-btn.fav.on svg { fill: var(--red); stroke: var(--red); }
+.icon-btn.eye.on { color: #fff; }

@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/dub_song.py'),
+        'python', path.resolve('./engine/synthesis/dub_song.py'),
         '--job_dir', jobDir,
         '--segment', segment,
         '--path_mode', path_mode,

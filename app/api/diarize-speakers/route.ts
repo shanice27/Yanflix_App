@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     const args = [
       'run', '-n', 'dubbing',
-      'python', path.resolve('./python_backend/diarize_speakers.py'),
+      'python', path.resolve('./engine/transcription/diarize_speakers.py'),
       '--ep_folder', ep_folder,
       '--vocals',    vocalsPath,
       '--job_dir',   jobDir,

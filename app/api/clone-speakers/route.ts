@@ -293,7 +293,7 @@ export async function POST(request: Request) {
 
     if (useLocal) {
       const { exec } = await import('child_process');
-      const scriptPath = path.resolve('./python_backend/build_emotion_bank.py');
+      const scriptPath = path.resolve('./stale_python/build_emotion_bank.py');
       const cmd = [
         `conda run -n sonitr python "${scriptPath}"`,
         `--show "${show_name}"`,

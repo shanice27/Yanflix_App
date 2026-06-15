@@ -1,16 +1,6 @@
-"use client";
+// app/page.tsx is good to go!
+import { redirect } from 'next/navigation';
 
-export default function DubStudio() {
-  return (
-    <main className="studio">
-      <header className="studio-header">
-        <h1>YANFLIX DUB STUDIO</h1>
-        <p>Demucs → Whisper → Translate → Direct → IndexTTS-2</p>
-      </header>
-
-      <section className="pipeline">
-        {/* Pipeline steps will live here — migrate from Yanflix.html */}
-      </section>
-    </main>
-  );
+export default function Home() {
+  redirect('/ui/index.html');
 }

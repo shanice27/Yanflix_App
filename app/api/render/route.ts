@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/render_video.py'),
+        'python', path.resolve('./engine/rendering/render_video.py'),
         '--job_dir', jobDir,
         '--track_mode', track_mode,
         '--show', showName,

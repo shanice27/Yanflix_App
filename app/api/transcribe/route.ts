@@ -86,7 +86,7 @@ export async function POST(request: Request) {
       'conda',
       [
         'run', '-n', 'dubbing',
-        'python', path.resolve('./python_backend/transcribe.py'),
+        'python', path.resolve('./engine/transcription/transcribe.py'),
         '--vocals', vocalsPath,
         '--job_dir', jobDir,
         '--source_lang', source_lang,
