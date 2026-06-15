@@ -22,7 +22,11 @@ source /workspace/miniconda/etc/profile.d/conda.sh 2>/dev/null || true
 
 CONDA_ENV="yanflix"
 
-# 2. Create Python 3.11 env if needed
+# 2. Accept Anaconda TOS (required on first run)
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main 2>/dev/null || true
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r 2>/dev/null || true
+
+# 3. Create Python 3.11 env if needed
 if ! conda env list | grep -q "^$CONDA_ENV "; then
   echo "Creating conda env '$CONDA_ENV' with Python 3.11..."
   conda create -n $CONDA_ENV python=3.11 -y -q
